@@ -2,9 +2,6 @@
 
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Label } from "../ui/label";
-import { Input } from "../ui/input";
-import { cn } from "@/lib/utils";
 import { IconBrandGoogle } from "@tabler/icons-react";
 
 type Errors = {
@@ -18,6 +15,7 @@ type Errors = {
 
 export function SignupForm() {
   const router = useRouter();
+
   const [form, setForm] = useState({
     firstname: "",
     lastname: "",
@@ -29,56 +27,52 @@ export function SignupForm() {
   const [errors, setErrors] = useState<Errors>({});
   const [submitting, setSubmitting] = useState(false);
 
-  const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-
   const validate = () => {
     const newErrors: Errors = {};
-
-    if (!form.firstname.trim()) {
-      newErrors.firstname = "First name is required";
-    }
-
-    if (!form.lastname.trim()) {
-      newErrors.lastname = "Last name is required";
-    }
-
+    if (!form.firstname.trim()) newErrors.firstname = "Required";
+    if (!form.lastname.trim()) newErrors.lastname = "Required";
     if (!form.email.trim()) {
       newErrors.email = "Email is required";
     } else if (!/^\S+@\S+\.\S+$/.test(form.email)) {
       newErrors.email = "Invalid email format";
     }
-
     if (!form.password) {
       newErrors.password = "Password is required";
     } else if (form.password.length < 6) {
-      newErrors.password = "Password must be at least 6 characters";
+      newErrors.password = "Min 6 characters";
     }
-
     if (!form.confirmpassword) {
-      newErrors.confirmpassword = "Please confirm your password";
+      newErrors.confirmpassword = "Required";
     } else if (form.password !== form.confirmpassword) {
       newErrors.confirmpassword = "Passwords do not match";
     }
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
+  const parseError = async (res: Response) => {
+    let message = "Something went wrong";
+    try {
+      const data = await res.json();
+      if (typeof data.detail === "string") message = data.detail;
+      else if (Array.isArray(data.detail))
+        message = data.detail.map((e: any) => e.msg).join(", ");
+    } catch {
+      message = res.statusText || message;
+    }
+    return message;
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     if (!validate()) return;
-
     setSubmitting(true);
     setErrors({});
 
     try {
-      // Register user
-      const registerRes = await fetch(`${API_URL}auth/register`, {
+      const registerRes = await fetch(`/api/auth/register`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           email: form.email,
           password: form.password,
@@ -89,35 +83,37 @@ export function SignupForm() {
       });
 
       if (!registerRes.ok) {
-        const errorData = await registerRes.json().catch(() => ({}));
-        throw new Error(errorData.detail || "Registration failed");
+        const message = await parseError(registerRes);
+        if (message.toLowerCase().includes("email")) {
+          setErrors({ email: message });
+        } else {
+          setErrors({ general: message });
+        }
+        setSubmitting(false);
+        return;
       }
 
-      // Auto-login after successful registration
-      const loginFormData = new URLSearchParams();
-      loginFormData.append("username", form.email);
-      loginFormData.append("password", form.password);
+      const formData = new URLSearchParams();
+      formData.append("username", form.email);
+      formData.append("password", form.password);
 
-      const loginRes = await fetch("/api/auth/login", {
+      const loginRes = await fetch(`/api/auth/login`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-        },
-        body: loginFormData.toString(),
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: formData.toString(),
         credentials: "include",
       });
 
-      if (loginRes.ok) {
-        // Success! Cookies are set, redirect to dashboard
-        router.push("/dashboard");
-        router.refresh();
-      } else {
-        // Registration successful but auto-login failed
+      if (!loginRes.ok) {
         router.push("/login?registered=true");
+        return;
       }
+
+      router.push("/dashboard");
+      router.refresh();
     } catch (err) {
-      console.error("Signup error:", err);
-      const message = err instanceof Error ? err.message : "Registration failed";
+      const message =
+        err instanceof Error ? err.message : "Failed to connect to server";
       setErrors({ general: message });
     } finally {
       setSubmitting(false);
@@ -125,7 +121,8 @@ export function SignupForm() {
   };
 
   const handleGoogleSignup = () => {
-    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000";
+    const backendUrl =
+      process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000";
     window.location.href = `${backendUrl}/auth/login/google`;
   };
 
@@ -134,131 +131,137 @@ export function SignupForm() {
     setErrors((prev) => ({ ...prev, [key]: undefined, general: undefined }));
   };
 
+  const inputCls =
+    "w-full rounded-lg border border-white/10 bg-slate-800/60 px-3 py-2 text-sm text-white placeholder-slate-500 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 disabled:opacity-50";
+
   return (
-    <div className="mx-auto w-full max-w-md rounded-2xl border border-blue-100 bg-white p-8 shadow-lg">
-      <h2 className="text-center text-2xl font-bold text-blue-600">
-        Create Your Account
-      </h2>
+    <div className="w-full">
+      <div className="mb-4">
+        <h2 className="text-xl font-semibold text-white">Create account</h2>
+        <p className="text-xs text-slate-400 mt-0.5">
+          Join AutoRad and get started today
+        </p>
+      </div>
 
-      <p className="mt-2 text-center text-sm text-blue-500">
-        Welcome to AutoRad
-      </p>
-
-      <form className="mt-8 space-y-3" onSubmit={handleSubmit}>
+      <form className="space-y-2.5" onSubmit={handleSubmit}>
         {errors.general && (
-          <div className="rounded-md bg-red-50 p-3 text-sm text-red-600">
+          <div className="rounded-lg border border-red-500/20 bg-red-500/10 px-3 py-2 text-xs text-red-400">
             {errors.general}
           </div>
         )}
 
-        <LabelInputContainer>
-          <Label htmlFor="firstname">First Name</Label>
-          <Input
-            id="firstname"
-            value={form.firstname}
-            onChange={(e) => updateField("firstname", e.target.value)}
-            className="focus-visible:ring-blue-100"
-            disabled={submitting}
-          />
-          {errors.firstname && <ErrorText>{errors.firstname}</ErrorText>}
-        </LabelInputContainer>
+        {/* First + Last name side by side */}
+        <div className="grid grid-cols-2 gap-2.5">
+          <div>
+            <label className="mb-1 block text-[10px] font-medium uppercase tracking-wider text-slate-400">
+              First name
+            </label>
+            <input
+              value={form.firstname}
+              onChange={(e) => updateField("firstname", e.target.value)}
+              disabled={submitting}
+              placeholder="Jane"
+              className={inputCls}
+            />
+            {errors.firstname && (
+              <p className="mt-0.5 text-[10px] text-red-400">{errors.firstname}</p>
+            )}
+          </div>
+          <div>
+            <label className="mb-1 block text-[10px] font-medium uppercase tracking-wider text-slate-400">
+              Last name
+            </label>
+            <input
+              value={form.lastname}
+              onChange={(e) => updateField("lastname", e.target.value)}
+              disabled={submitting}
+              placeholder="Smith"
+              className={inputCls}
+            />
+            {errors.lastname && (
+              <p className="mt-0.5 text-[10px] text-red-400">{errors.lastname}</p>
+            )}
+          </div>
+        </div>
 
-        <LabelInputContainer>
-          <Label htmlFor="lastname">Last Name</Label>
-          <Input
-            id="lastname"
-            value={form.lastname}
-            onChange={(e) => updateField("lastname", e.target.value)}
-            className="focus-visible:ring-blue-100"
-            disabled={submitting}
-          />
-          {errors.lastname && <ErrorText>{errors.lastname}</ErrorText>}
-        </LabelInputContainer>
-
-        <LabelInputContainer>
-          <Label htmlFor="email">Email</Label>
-          <Input
-            id="email"
+        {/* Email */}
+        <div>
+          <label className="mb-1 block text-[10px] font-medium uppercase tracking-wider text-slate-400">
+            Email
+          </label>
+          <input
             type="email"
             value={form.email}
             onChange={(e) => updateField("email", e.target.value)}
-            className="focus-visible:ring-blue-100"
             disabled={submitting}
+            placeholder="you@example.com"
+            className={inputCls}
           />
-          {errors.email && <ErrorText>{errors.email}</ErrorText>}
-        </LabelInputContainer>
-
-        <LabelInputContainer>
-          <Label htmlFor="password">Password</Label>
-          <Input
-            id="password"
-            type="password"
-            value={form.password}
-            onChange={(e) => updateField("password", e.target.value)}
-            className="focus-visible:ring-blue-100"
-            disabled={submitting}
-          />
-          {errors.password && <ErrorText>{errors.password}</ErrorText>}
-        </LabelInputContainer>
-
-        <LabelInputContainer>
-          <Label htmlFor="confirmpassword">Confirm Password</Label>
-          <Input
-            id="confirmpassword"
-            type="password"
-            value={form.confirmpassword}
-            onChange={(e) => updateField("confirmpassword", e.target.value)}
-            className="focus-visible:ring-blue-100"
-            disabled={submitting}
-          />
-          {errors.confirmpassword && (
-            <ErrorText>{errors.confirmpassword}</ErrorText>
+          {errors.email && (
+            <p className="mt-0.5 text-[10px] text-red-400">{errors.email}</p>
           )}
-        </LabelInputContainer>
+        </div>
+
+        {/* Password + Confirm side by side */}
+        <div className="grid grid-cols-2 gap-2.5">
+          <div>
+            <label className="mb-1 block text-[10px] font-medium uppercase tracking-wider text-slate-400">
+              Password
+            </label>
+            <input
+              type="password"
+              value={form.password}
+              onChange={(e) => updateField("password", e.target.value)}
+              disabled={submitting}
+              placeholder="••••••••"
+              className={inputCls}
+            />
+            {errors.password && (
+              <p className="mt-0.5 text-[10px] text-red-400">{errors.password}</p>
+            )}
+          </div>
+          <div>
+            <label className="mb-1 block text-[10px] font-medium uppercase tracking-wider text-slate-400">
+              Confirm
+            </label>
+            <input
+              type="password"
+              value={form.confirmpassword}
+              onChange={(e) => updateField("confirmpassword", e.target.value)}
+              disabled={submitting}
+              placeholder="••••••••"
+              className={inputCls}
+            />
+            {errors.confirmpassword && (
+              <p className="mt-0.5 text-[10px] text-red-400">{errors.confirmpassword}</p>
+            )}
+          </div>
+        </div>
 
         <button
           type="submit"
           disabled={submitting}
-          className="h-11 w-full cursor-pointer rounded-md bg-blue-600 font-semibold text-white transition hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="mt-1 h-10 w-full rounded-xl bg-blue-600 text-sm font-semibold text-white transition hover:bg-blue-500 disabled:cursor-not-allowed disabled:opacity-50"
         >
-          {submitting ? "Creating Account..." : "Sign Up"}
+          {submitting ? "Creating account…" : "Create account"}
         </button>
-
-        <div className="my-3 h-px w-full bg-blue-100" />
-
-        <button
-          type="button"
-          onClick={handleGoogleSignup}
-          disabled={submitting}
-          className="flex h-11 cursor-pointer w-full items-center justify-center gap-2 rounded-md border border-blue-200 bg-blue-50 text-blue-700 transition hover:bg-blue-100 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          <IconBrandGoogle className="h-5 w-5" />
-          Continue with Google
-        </button>
-
-        <div className="mt-4 text-center text-sm text-gray-600">
-          Already have an account?{" "}
-          <a href="/login" className="text-blue-600 hover:underline">
-            Login
-          </a>
-        </div>
       </form>
+
+      <div className="my-3 flex items-center gap-3">
+        <div className="h-px flex-1 bg-white/10" />
+        <span className="text-[10px] text-slate-500">or</span>
+        <div className="h-px flex-1 bg-white/10" />
+      </div>
+
+      <button
+        type="button"
+        onClick={handleGoogleSignup}
+        disabled={submitting}
+        className="flex h-10 w-full items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 text-sm font-medium text-slate-300 transition hover:bg-white/10 disabled:opacity-50"
+      >
+        <IconBrandGoogle className="h-4 w-4" />
+        Continue with Google
+      </button>
     </div>
   );
 }
-
-/* ---------- Small Components ---------- */
-
-const ErrorText = ({ children }: { children: React.ReactNode }) => (
-  <p className="text-sm text-red-500">{children}</p>
-);
-
-const LabelInputContainer = ({
-  children,
-  className,
-}: {
-  children: React.ReactNode;
-  className?: string;
-}) => (
-  <div className={cn("flex flex-col space-y-1", className)}>{children}</div>
-);

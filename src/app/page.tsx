@@ -189,7 +189,7 @@ export default function GetStartedPage() {
         <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
           <div>
             <p className="text-xs uppercase tracking-[0.14em] text-blue-700">Built for radiology teams</p>
-            <h2 className="text-3xl font-semibold text-slate-900 sm:text-4xl">Precision where it matters</h2>
+            <h2 className="text-3xl font-semibold text-white sm:text-4xl">Precision where it matters</h2>
             <p className="mt-3 max-w-2xl text-slate-600">
               We combine computer vision with a clinician-first experience so teams can trust every impression that leaves the workstation.
             </p>

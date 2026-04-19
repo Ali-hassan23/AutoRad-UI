@@ -4,7 +4,7 @@ export async function getReport(file: File) {
   const form = new FormData();
   form.append("file", file);
 
-  const res = await fetch(`${API_URL}/generate/generate`, {
+  const res = await fetch(`${API_URL}/generate/analyze`, {
     method: "POST",
     body: form,
   });
@@ -12,6 +12,8 @@ export async function getReport(file: File) {
   if (!res.ok) {
     throw new Error("Failed to generate report");
   }
+
+  console.log("Report generation response:", res);
 
   return res.json();
 }
@@ -28,6 +30,8 @@ export async function updateReport(id: string, report: any) {
   if (!res.ok) {
     throw new Error("Failed to update report");
   }
+
+  
 
   return res.json();
 }

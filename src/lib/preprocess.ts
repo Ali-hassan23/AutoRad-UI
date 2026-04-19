@@ -4,13 +4,13 @@ export async function predictXray(file: File) {
   const form = new FormData();
   form.append("file", file);
 
-  const res = await fetch(`${API_URL}/preprocess/predict`, {
+  const res = await fetch(`${API_URL}/preprocess/validate-only`, {
     method: "POST",
     body: form,
   });
 
   if (!res.ok) {
-    throw new Error("Prediction failed");
+    throw new Error("Validation failed");
   }
 
   return res.json();

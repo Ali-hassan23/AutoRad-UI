@@ -14,8 +14,8 @@ export async function POST(
   const path = auth.join("/");
   
   try {
-    // Get request body
     const contentType = request.headers.get("content-type") || "";
+    const cookieHeader = request.headers.get("cookie");
     let body: string;
     
     if (contentType.includes("application/x-www-form-urlencoded")) {
@@ -25,30 +25,29 @@ export async function POST(
       body = JSON.stringify(jsonBody);
     }
 
-    // Forward request to FastAPI backend
     const response = await fetch(`${BACKEND_URL}/auth/${path}`, {
       method: "POST",
       headers: {
         "Content-Type": contentType,
+        ...(cookieHeader && { Cookie: cookieHeader }),
       },
       body: body,
       credentials: "include",
     });
 
-    // Get response data
     const data = await response.json().catch(() => ({}));
     
-    // Create Next.js response with same status code
     const nextResponse = NextResponse.json(data, { 
       status: response.status 
     });
     
-    // Forward Set-Cookie headers from backend to client
-    // This is CRITICAL for cookie-based auth
-    const setCookieHeaders = response.headers.get("set-cookie");
-    if (setCookieHeaders) {
-      nextResponse.headers.set("set-cookie", setCookieHeaders);
-    }
+    // ✅ Fix: correctly forward multiple Set-Cookie headers
+    const setCookieHeaders = response.headers.getSetCookie?.() 
+      ?? [response.headers.get("set-cookie")].filter(Boolean) as string[];
+
+    setCookieHeaders.forEach((cookie) => {
+      nextResponse.headers.append("set-cookie", cookie);
+    });
     
     return nextResponse;
   } catch (error) {
