@@ -100,37 +100,37 @@ export default function SettingsPage() {
     (fullName !== (user.full_name ?? "") || email !== user.email);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-slate-50 text-slate-900">
+    <div className="min-h-screen bg-white text-gray-900 animate-fade-in">
       {/* Header */}
-      <header className="sticky top-0 z-10 border-b border-white/10 bg-slate-950/80 backdrop-blur">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4 text-white">
+      <header className="sticky top-0 z-10 border-b border-gray-200 bg-white/95 backdrop-blur transition-smooth">
+        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4 text-gray-900">
           <div className="flex items-center gap-3">
-            <div className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-white text-sm font-semibold text-slate-900">
+            <div className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-blue-600 text-sm font-semibold text-white">
               AR
             </div>
             <div>
               <p className="text-sm font-semibold leading-tight">AutoRad</p>
-              <p className="text-[11px] text-slate-300">
+              <p className="text-[11px] text-gray-600">
                 Radiology AI workspace
               </p>
             </div>
           </div>
 
-          <nav className="hidden items-center gap-6 text-sm font-medium text-slate-200 md:flex">
-            <Link href="/dashboard" className="hover:text-white">
+          <nav className="hidden items-center gap-6 text-sm font-medium text-gray-700 md:flex">
+            <Link href="/dashboard" className="transition-smooth hover:text-blue-600">
               Dashboard
             </Link>
-            <Link href="/preprocess" className="hover:text-white">
+            <Link href="/preprocess" className="transition-smooth hover:text-blue-600">
               Generate Reports
             </Link>
-            <Link href="/settings" className="text-white">
+            <Link href="/settings" className="text-blue-600 font-semibold">
               Settings
             </Link>
           </nav>
 
           <button
             onClick={handleLogout}
-            className="rounded-full bg-white px-4 py-2 text-xs font-semibold text-slate-900 shadow-sm hover:bg-slate-100"
+            className="rounded-full bg-blue-600 px-4 py-2 text-xs font-semibold text-white shadow-sm hover:bg-blue-700 transition-smooth"
           >
             Sign out
           </button>
@@ -139,12 +139,12 @@ export default function SettingsPage() {
 
       <main className="relative isolate mx-auto max-w-6xl px-6 pb-14 pt-10">
         {/* Title */}
-        <div className="relative mb-10 space-y-2 text-white">
-          <p className="text-xs uppercase tracking-[0.14em] text-blue-200">
+        <div className="relative mb-10 space-y-2 text-gray-900 animate-slide-in-left">
+          <p className="text-xs uppercase tracking-[0.14em] text-blue-600 font-semibold">
             Account
           </p>
           <h2 className="text-3xl font-semibold">Settings</h2>
-          <p className="text-sm text-slate-200">
+          <p className="text-sm text-gray-600">
             Manage your profile and account preferences.
           </p>
         </div>
@@ -156,8 +156,8 @@ export default function SettingsPage() {
         ) : (
           <div className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr]">
             {/* Profile */}
-            <section className="rounded-2xl border border-white/10 bg-white/90 p-8 shadow-xl">
-              <h3 className="text-xl font-semibold text-slate-900 mb-4">
+            <section className="rounded-2xl border border-gray-200 bg-white p-8 shadow-sm transition-smooth hover-lift animate-slide-in-left">
+              <h3 className="text-xl font-semibold text-gray-900 mb-4">
                 Personal Information
               </h3>
 
@@ -168,7 +168,7 @@ export default function SettingsPage() {
                     setFullName(e.target.value);
                     setSaveState("idle");
                   }}
-                  className="w-full border p-2 rounded"
+                  className="form-input"
                   placeholder="Full Name"
                 />
 
@@ -180,22 +180,22 @@ export default function SettingsPage() {
                     setEmail(e.target.value);
                     setSaveState("idle");
                   }}
-                  className="w-full border p-2 rounded disabled:opacity-50"
+                  className="form-input"
                   placeholder="Email"
                 />
 
                 {saveState === "error" && (
-                  <p className="text-red-500">{errorMsg}</p>
+                  <p className="text-red-600 text-sm font-medium">{errorMsg}</p>
                 )}
 
                 {saveState === "saved" && (
-                  <p className="text-green-600">Saved successfully</p>
+                  <p className="text-emerald-600 text-sm font-medium">Saved successfully</p>
                 )}
 
                 <button
                   onClick={handleSave}
                   disabled={!isDirty || saveState === "saving"}
-                  className="w-full bg-blue-600 text-white py-2 rounded disabled:opacity-50"
+                  className="btn-primary w-full disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   {saveState === "saving" ? "Saving..." : "Save"}
                 </button>
@@ -203,22 +203,33 @@ export default function SettingsPage() {
             </section>
 
             {/* Account Info */}
-            <section className="rounded-2xl border bg-white p-8 shadow">
-              <h3 className="text-lg font-semibold mb-4">
+            <section className="rounded-2xl border border-gray-200 bg-white p-8 shadow-sm transition-smooth hover-lift animate-slide-in-left">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">
                 Account Details
               </h3>
 
-              <p>Role: {user.role}</p>
-              <p>Status: {user.is_active ? "Active" : "Inactive"}</p>
-              <p>Provider: {user.auth_provider}</p>
-              <p>
-                Joined:{" "}
-                {new Date(user.created_at).toLocaleDateString()}
-              </p>
+              <dl className="space-y-3">
+                <div>
+                  <dt className="text-xs uppercase tracking-[0.08em] text-gray-500 font-semibold">Role</dt>
+                  <dd className="text-gray-900">{user.role}</dd>
+                </div>
+                <div>
+                  <dt className="text-xs uppercase tracking-[0.08em] text-gray-500 font-semibold">Status</dt>
+                  <dd className={user.is_active ? "text-emerald-700" : "text-red-700"}>{user.is_active ? "Active" : "Inactive"}</dd>
+                </div>
+                <div>
+                  <dt className="text-xs uppercase tracking-[0.08em] text-gray-500 font-semibold">Provider</dt>
+                  <dd className="text-gray-900">{user.auth_provider}</dd>
+                </div>
+                <div>
+                  <dt className="text-xs uppercase tracking-[0.08em] text-gray-500 font-semibold">Joined</dt>
+                  <dd className="text-gray-900">{new Date(user.created_at).toLocaleDateString()}</dd>
+                </div>
+              </dl>
 
               <button
                 onClick={handleLogout}
-                className="mt-6 w-full bg-red-500 text-white py-2 rounded"
+                className="mt-6 w-full bg-red-600 text-white py-2 rounded-lg font-semibold transition-smooth hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
               >
                 Sign out
               </button>
