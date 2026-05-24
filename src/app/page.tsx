@@ -57,15 +57,15 @@ function CheckIcon() {
 
 function ReportMock() {
   return (
-    <div className="relative w-full max-w-xl overflow-hidden rounded-3xl border border-white/20 bg-white/70 p-6 shadow-xl backdrop-blur">
-      <div className="absolute -left-24 -top-24 h-48 w-48 rounded-full bg-blue-200/40 blur-3xl" />
-      <div className="absolute -right-16 -bottom-16 h-40 w-40 rounded-full bg-indigo-200/40 blur-3xl" />
+    <div className="relative w-full max-w-xl overflow-hidden rounded-3xl border border-secondary/20 bg-white/95 p-6 shadow-xl backdrop-blur">
+      <div className="absolute -left-24 -top-24 h-48 w-48 rounded-full bg-primary/20 blur-3xl" />
+      <div className="absolute -right-16 -bottom-16 h-40 w-40 rounded-full bg-secondary/20 blur-3xl" />
       <div className="flex items-center justify-between">
         <div className="space-y-1">
-          <p className="text-sm font-medium text-slate-600">Patient</p>
-          <p className="text-lg font-semibold text-slate-900">Jane Doe • 48</p>
+          <p className="text-sm font-medium text-muted-foreground">Patient</p>
+          <p className="text-lg font-semibold text-foreground">Jane Doe • 48</p>
         </div>
-        <span className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700">
+        <span className="rounded-full bg-accent/10 px-3 py-1 text-xs font-semibold text-accent">
           Auto-ready
         </span>
       </div>
@@ -74,28 +74,28 @@ function ReportMock() {
         {["Findings", "Impression", "Recommendations"].map((heading, idx) => (
           <div
             key={heading}
-            className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
+            className="rounded-2xl border border-border bg-white p-4 shadow-sm"
           >
-            <div className="mb-2 flex items-center gap-2 text-sm font-semibold text-slate-800">
-              <span className="h-2 w-2 rounded-full bg-blue-600" />
+            <div className="mb-2 flex items-center gap-2 text-sm font-semibold text-foreground">
+              <span className="h-2 w-2 rounded-full bg-primary" />
               {heading}
             </div>
             <div className="space-y-2">
-              <div className="h-2.5 w-11/12 rounded-full bg-slate-100" />
-              <div className="h-2.5 w-10/12 rounded-full bg-slate-100" />
-              <div className="h-2.5 w-9/12 rounded-full bg-slate-100" />
-              {idx === 1 && <div className="h-2.5 w-8/12 rounded-full bg-blue-100" />}
+              <div className="h-2.5 w-11/12 rounded-full bg-muted" />
+              <div className="h-2.5 w-10/12 rounded-full bg-muted" />
+              <div className="h-2.5 w-9/12 rounded-full bg-muted" />
+              {idx === 1 && <div className="h-2.5 w-8/12 rounded-full bg-secondary/20" />}
             </div>
           </div>
         ))}
       </div>
 
-      <div className="mt-6 flex items-center justify-between rounded-2xl bg-slate-900 px-4 py-3 text-white shadow-md">
+      <div className="mt-6 flex items-center justify-between rounded-2xl bg-primary px-4 py-3 text-primary-foreground shadow-md">
         <div>
-          <p className="text-xs uppercase tracking-[0.08em] text-white/70">Quality check</p>
+          <p className="text-xs uppercase tracking-[0.08em] text-primary-foreground/70">Quality check</p>
           <p className="text-sm font-semibold">No critical conflicts detected</p>
         </div>
-        <div className="flex items-center gap-2 rounded-xl bg-white/10 px-3 py-1 text-sm font-semibold">
+        <div className="flex items-center gap-2 rounded-xl bg-primary-foreground/10 px-3 py-1 text-sm font-semibold">
           <CheckIcon />
           Verified
         </div>
@@ -106,34 +106,34 @@ function ReportMock() {
 
 export default function GetStartedPage() {
   return (
-    <main className="min-h-screen bg-gradient-to-b from-slate-950 via-slate-900 to-white text-slate-900">
+    <main className="min-h-screen bg-gradient-to-b from-background via-sky-50 to-white text-foreground">
       <div className="relative isolate overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(99,102,241,0.25),transparent_35%)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_10%,rgba(14,165,233,0.20),transparent_40%)]" />
-        <header className="sticky top-0 z-10 border-b border-white/10 bg-slate-950/70 backdrop-blur">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(15,118,110,0.12),transparent_35%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_10%,rgba(20,184,166,0.10),transparent_40%)]" />
+        <header className="sticky top-0 z-10 border-b border-border bg-white/90 backdrop-blur">
           <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
             <div className="flex items-center gap-3">
-              <Image src="/logo.png" alt="AutoRad" width={44} height={44} className="rounded-lg bg-white p-2" />
+              <Image src="/logo.png" alt="AutoRad" width={44} height={44} className="rounded-lg bg-primary p-2" />
               <div>
-                <p className="text-sm uppercase tracking-[0.12em] text-slate-200">AutoRad</p>
-                <p className="text-xs text-slate-400">Radiology AI copilot</p>
+                <p className="text-sm uppercase tracking-[0.12em] text-primary font-semibold">AutoRad</p>
+                <p className="text-xs text-muted-foreground">Radiology AI copilot</p>
               </div>
             </div>
-            <nav className="hidden items-center gap-8 text-sm font-medium text-slate-200 md:flex">
-              <Link href="#product" className="hover:text-white">Product</Link>
-              <Link href="#workflow" className="hover:text-white">Workflow</Link>
-              <Link href="#metrics" className="hover:text-white">Outcomes</Link>
-              <Link href="#cta" className="hover:text-white">Pricing</Link>
+            <nav className="hidden items-center gap-8 text-sm font-medium text-muted-foreground md:flex">
+              <Link href="#product" className="hover:text-foreground transition">Product</Link>
+              <Link href="#workflow" className="hover:text-foreground transition">Workflow</Link>
+              <Link href="#metrics" className="hover:text-foreground transition">Outcomes</Link>
+              <Link href="#cta" className="hover:text-foreground transition">Pricing</Link>
             </nav>
             <div className="flex items-center gap-3">
               <Link
                 href="/auth"
-                className="hidden rounded-full px-4 py-2 text-sm font-semibold text-slate-100 ring-1 ring-white/15 transition hover:ring-white/40 md:block"
+                className="hidden rounded-full px-4 py-2 text-sm font-semibold text-primary ring-1 ring-primary/20 transition hover:ring-primary/40 md:block"
               >
                 Sign in
               </Link>
               <Link href="/auth">
-                <Button className="rounded-full bg-white text-slate-900 hover:bg-slate-100">
+                <Button className="rounded-full bg-primary text-primary-foreground hover:bg-primary/90">
                   Start trial
                 </Button>
               </Link>
@@ -142,44 +142,44 @@ export default function GetStartedPage() {
         </header>
 
         <section className="relative mx-auto grid max-w-6xl items-center gap-10 px-6 pb-20 pt-14 lg:grid-cols-2 lg:pt-20">
-          <div className="space-y-6 text-white">
-            <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-100 ring-1 ring-white/15">
-              <span className="h-2 w-2 rounded-full bg-emerald-400" />
+          <div className="space-y-6">
+            <div className="inline-flex items-center gap-2 rounded-full bg-secondary/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-secondary ring-1 ring-secondary/20">
+              <span className="h-2 w-2 rounded-full bg-accent" />
               Clinician-ready drafts in seconds
             </div>
-            <h1 className="text-4xl font-semibold leading-tight sm:text-5xl">
+            <h1 className="text-4xl font-semibold leading-tight sm:text-5xl text-foreground">
               AI-generated chest X-ray reports with human-grade clarity.
             </h1>
-            <p className="max-w-xl text-base text-slate-200 sm:text-lg">
+            <p className="max-w-xl text-base text-muted-foreground sm:text-lg">
               AutoRad accelerates radiology throughput with auditable, structured reports. Keep clinicians in control while the AI handles the heavy lifting.
             </p>
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
               <Link href="/auth">
-                <Button size="lg" className="rounded-full bg-blue-500 px-6 py-3 text-base font-semibold text-white hover:bg-blue-600">
+                <Button size="lg" className="rounded-full bg-primary px-6 py-3 text-base font-semibold text-primary-foreground hover:bg-primary/90 shadow-md">
                   Generate my first report
                 </Button>
               </Link>
               <Link
                 href="/generate"
-                className="inline-flex items-center justify-center rounded-full px-4 py-3 text-sm font-semibold text-white ring-1 ring-white/20 hover:ring-white/40"
+                className="inline-flex items-center justify-center rounded-full px-4 py-3 text-sm font-semibold text-primary ring-1 ring-primary/20 hover:bg-primary/5 transition"
               >
                 View sample workflow
               </Link>
             </div>
 
-            <div className="grid gap-4 rounded-2xl bg-white/5 p-4 ring-1 ring-white/10 sm:grid-cols-3">
+            <div className="grid gap-4 rounded-2xl bg-gradient-to-br from-secondary/5 to-accent/5 p-4 ring-1 ring-border sm:grid-cols-3">
               {highlights.map((item) => (
                 <div key={item.label} className="space-y-1">
-                  <p className="text-xs uppercase tracking-[0.12em] text-slate-300">{item.label}</p>
-                  <p className="text-sm text-white">{item.detail}</p>
+                  <p className="text-xs uppercase tracking-[0.12em] text-primary font-semibold">{item.label}</p>
+                  <p className="text-sm text-foreground">{item.detail}</p>
                 </div>
               ))}
             </div>
           </div>
 
           <div className="relative">
-            <div className="absolute -left-10 -top-10 h-40 w-40 rounded-full bg-indigo-500/40 blur-3xl" />
-            <div className="absolute -right-14 bottom-4 h-28 w-28 rounded-full bg-cyan-400/40 blur-3xl" />
+            <div className="absolute -left-10 -top-10 h-40 w-40 rounded-full bg-primary/20 blur-3xl" />
+            <div className="absolute -right-14 bottom-4 h-28 w-28 rounded-full bg-secondary/20 blur-3xl" />
             <ReportMock />
           </div>
         </section>
@@ -188,15 +188,15 @@ export default function GetStartedPage() {
       <section id="product" className="mx-auto max-w-6xl space-y-8 px-6 py-16">
         <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
           <div>
-            <p className="text-xs uppercase tracking-[0.14em] text-blue-700">Built for radiology teams</p>
-            <h2 className="text-3xl font-semibold text-white sm:text-4xl">Precision where it matters</h2>
-            <p className="mt-3 max-w-2xl text-slate-600">
+            <p className="text-xs uppercase tracking-[0.14em] text-primary font-semibold">Built for radiology teams</p>
+            <h2 className="text-3xl font-semibold text-foreground sm:text-4xl">Precision where it matters</h2>
+            <p className="mt-3 max-w-2xl text-muted-foreground">
               We combine computer vision with a clinician-first experience so teams can trust every impression that leaves the workstation.
             </p>
           </div>
           <div className="flex items-center gap-3">
-            <div className="h-2 w-2 rounded-full bg-emerald-500" />
-            <p className="text-sm font-medium text-slate-700">SOC2 in progress • On-prem ready</p>
+            <div className="h-2 w-2 rounded-full bg-accent" />
+            <p className="text-sm font-medium text-muted-foreground">SOC2 in progress • On-prem ready</p>
           </div>
         </div>
 
@@ -204,28 +204,28 @@ export default function GetStartedPage() {
           {features.map((feature) => (
             <div
               key={feature.title}
-              className="group relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-xl"
+              className="group relative overflow-hidden rounded-2xl border border-border bg-card p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg hover:border-secondary/30"
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-transparent to-transparent opacity-0 transition group-hover:opacity-100" />
+              <div className="absolute inset-0 bg-gradient-to-br from-secondary/5 via-transparent to-transparent opacity-0 transition group-hover:opacity-100" />
               <div className="relative space-y-3">
-                <div className="inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-800">
+                <div className="inline-flex items-center gap-2 rounded-full bg-accent/10 px-3 py-1 text-xs font-semibold text-accent">
                   <CheckIcon />
                   Feature
                 </div>
-                <h3 className="text-lg font-semibold text-slate-900">{feature.title}</h3>
-                <p className="text-sm text-slate-600">{feature.copy}</p>
+                <h3 className="text-lg font-semibold text-foreground">{feature.title}</h3>
+                <p className="text-sm text-muted-foreground">{feature.copy}</p>
               </div>
             </div>
           ))}
         </div>
       </section>
 
-      <section id="workflow" className="bg-slate-50 py-16">
+      <section id="workflow" className="bg-muted/30 py-16">
         <div className="mx-auto max-w-6xl space-y-10 px-6">
           <div className="flex flex-col gap-2">
-            <p className="text-xs uppercase tracking-[0.14em] text-blue-700">Workflow</p>
-            <h2 className="text-3xl font-semibold text-slate-900 sm:text-4xl">From upload to signed report</h2>
-            <p className="max-w-2xl text-slate-600">
+            <p className="text-xs uppercase tracking-[0.14em] text-primary font-semibold">Workflow</p>
+            <h2 className="text-3xl font-semibold text-foreground sm:text-4xl">From upload to signed report</h2>
+            <p className="max-w-2xl text-muted-foreground">
               A guided flow that keeps clinicians in the loop while AI does the heavy lifting.
             </p>
           </div>
@@ -233,12 +233,12 @@ export default function GetStartedPage() {
             {steps.map((step, idx) => (
               <div
                 key={step}
-                className="relative rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"
+                className="relative rounded-2xl border border-border bg-card p-6 shadow-sm hover:shadow-md transition"
               >
-                <div className="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-full bg-blue-600 text-sm font-semibold text-white">
+                <div className="mb-3 inline-flex h-10 w-10 items-center justify-center rounded-full bg-primary text-sm font-semibold text-primary-foreground">
                   {idx + 1}
                 </div>
-                <p className="text-sm text-slate-700">{step}</p>
+                <p className="text-sm text-muted-foreground">{step}</p>
               </div>
             ))}
           </div>
@@ -247,9 +247,9 @@ export default function GetStartedPage() {
 
       <section id="metrics" className="mx-auto max-w-6xl space-y-10 px-6 py-16">
         <div className="flex flex-col gap-2">
-          <p className="text-xs uppercase tracking-[0.14em] text-blue-700">Measured impact</p>
-          <h2 className="text-3xl font-semibold text-slate-900 sm:text-4xl">Outcomes you can report on</h2>
-          <p className="max-w-2xl text-slate-600">
+          <p className="text-xs uppercase tracking-[0.14em] text-primary font-semibold">Measured impact</p>
+          <h2 className="text-3xl font-semibold text-foreground sm:text-4xl">Outcomes you can report on</h2>
+          <p className="max-w-2xl text-muted-foreground">
             Purpose-built dashboards keep leadership in the loop with adoption and quality metrics.
           </p>
         </div>
@@ -257,33 +257,33 @@ export default function GetStartedPage() {
           {metrics.map((metric) => (
             <div
               key={metric.label}
-              className="rounded-2xl border border-slate-200 bg-white p-6 text-center shadow-sm"
+              className="rounded-2xl border border-border bg-card p-6 text-center shadow-sm hover:shadow-md hover:border-secondary/30 transition"
             >
-              <p className="text-3xl font-semibold text-slate-900">{metric.value}</p>
-              <p className="mt-2 text-sm text-slate-600">{metric.label}</p>
+              <p className="text-3xl font-semibold text-primary">{metric.value}</p>
+              <p className="mt-2 text-sm text-muted-foreground">{metric.label}</p>
             </div>
           ))}
         </div>
       </section>
 
-      <section id="cta" className="bg-gradient-to-r from-blue-600 to-indigo-600 py-14">
-        <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-6 px-6 text-white md:flex-row md:items-center">
+      <section id="cta" className="bg-gradient-to-r from-primary to-secondary py-14 shadow-lg">
+        <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-6 px-6 text-primary-foreground md:flex-row md:items-center">
           <div className="space-y-2">
-            <p className="text-xs uppercase tracking-[0.18em] text-white/70">Start now</p>
+            <p className="text-xs uppercase tracking-[0.18em] text-primary-foreground/70">Start now</p>
             <h3 className="text-2xl font-semibold">Ready to see AutoRad in action?</h3>
-            <p className="max-w-2xl text-white/80">
+            <p className="max-w-2xl text-primary-foreground/90">
               Spin up a secure sandbox, generate your first report, and invite colleagues to review.
             </p>
           </div>
           <div className="flex items-center gap-3">
             <Link href="/auth">
-              <Button className="rounded-full bg-white px-5 py-3 text-slate-900 hover:bg-slate-100">
+              <Button className="rounded-full bg-primary-foreground px-5 py-3 text-primary hover:bg-primary-foreground/90 font-semibold">
                 Create account
               </Button>
             </Link>
             <Link
               href="/auth"
-              className="rounded-full px-4 py-3 text-sm font-semibold text-white ring-1 ring-white/40 hover:bg-white/10"
+              className="rounded-full px-4 py-3 text-sm font-semibold text-primary-foreground ring-1 ring-primary-foreground/40 hover:bg-primary-foreground/10 transition"
             >
               Talk to us
             </Link>
@@ -291,20 +291,20 @@ export default function GetStartedPage() {
         </div>
       </section>
 
-      <footer className="border-t border-slate-200 bg-white">
+      <footer className="border-t border-border bg-card">
         <div className="mx-auto flex max-w-6xl flex-col gap-4 px-6 py-8 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-xl bg-slate-900 text-white inline-flex items-center justify-center font-semibold">AR</div>
+            <div className="h-10 w-10 rounded-xl bg-primary text-primary-foreground inline-flex items-center justify-center font-semibold">AR</div>
             <div>
-              <p className="text-sm font-semibold text-slate-900">AutoRad</p>
-              <p className="text-xs text-slate-500">AI for accelerated radiology</p>
+              <p className="text-sm font-semibold text-foreground">AutoRad</p>
+              <p className="text-xs text-muted-foreground">AI for accelerated radiology</p>
             </div>
           </div>
-          <div className="flex flex-wrap gap-4 text-sm text-slate-600">
-            <Link href="/generate" className="hover:text-slate-900">Product</Link>
-            <Link href="/dashboard" className="hover:text-slate-900">Dashboard</Link>
-            <Link href="/settings" className="hover:text-slate-900">Settings</Link>
-            <Link href="/auth" className="hover:text-slate-900">Support</Link>
+          <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
+            <Link href="/generate" className="hover:text-foreground transition">Product</Link>
+            <Link href="/dashboard" className="hover:text-foreground transition">Dashboard</Link>
+            <Link href="/settings" className="hover:text-foreground transition">Settings</Link>
+            <Link href="/auth" className="hover:text-foreground transition">Support</Link>
           </div>
         </div>
       </footer>

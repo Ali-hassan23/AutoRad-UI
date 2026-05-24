@@ -1,21 +1,37 @@
-export function formatReport(report: any): string {
+type ReportLike = {
+  refined_report?: string;
+  raw_report?: string;
+  is_xray?: boolean;
+  is_chest_xray?: boolean;
+  gate_confidence?: string;
+  processing_time_seconds?: number | string;
+  filename?: string;
+  gate_reason?: string;
+};
+
+export function formatReport(report: unknown): string {
   if (typeof report === "string") return report;
 
-  const refined = report.refined_report || report.raw_report || "";
+  const data =
+    typeof report === "object" && report !== null
+      ? (report as ReportLike)
+      : {};
+
+  const refined = data.refined_report || data.raw_report || "";
 
   const findingsMatch = refined.match(/FINDINGS:\s*([\s\S]*?)(?=IMPRESSION:|$)/i);
   const impressionMatch = refined.match(/IMPRESSION:\s*([\s\S]*?)$/i);
 
-  const findings = findingsMatch?.[1]?.trim() || report.raw_report || "No findings available.";
+  const findings = findingsMatch?.[1]?.trim() || data.raw_report || "No findings available.";
   const impression = impressionMatch?.[1]?.trim() || "See findings above.";
 
-  const modality = report.is_xray ? "X-Ray" : "Unknown";
-  const bodyPart = report.is_chest_xray ? "Chest" : "Unknown";
-  const confidence = report.gate_confidence
-    ? report.gate_confidence.charAt(0).toUpperCase() + report.gate_confidence.slice(1)
+  const modality = data.is_xray ? "X-Ray" : "Unknown";
+  const bodyPart = data.is_chest_xray ? "Chest" : "Unknown";
+  const confidence = data.gate_confidence
+    ? data.gate_confidence.charAt(0).toUpperCase() + data.gate_confidence.slice(1)
     : "N/A";
-  const processingTime = report.processing_time_seconds
-    ? `${Number(report.processing_time_seconds).toFixed(2)}s`
+  const processingTime = data.processing_time_seconds
+    ? `${Number(data.processing_time_seconds).toFixed(2)}s`
     : "N/A";
 
   return `
@@ -33,7 +49,7 @@ STUDY INFORMATION
 ───────────────────────────────────
 Modality            : ${modality}
 Body Part           : ${bodyPart}
-Filename            : ${report.filename || "Unknown"}
+Filename            : ${data.filename || "Unknown"}
 Clinical Indication :
 Technique           :
 Comparison Study    :
@@ -50,7 +66,7 @@ ${impression}
 
 GATE ASSESSMENT
 ───────────────────────────────────
-${report.gate_reason || "N/A"}
+${data.gate_reason || "N/A"}
 
 SIGN-OFF
 ───────────────────────────────────

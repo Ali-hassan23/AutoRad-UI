@@ -1,9 +1,14 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
+type ChatHistoryMessage = {
+  role: string;
+  content: string;
+};
+
 export async function chatWithReport(
   report: string,
   message: string,
-  history: any[]
+  history: ChatHistoryMessage[]
 ) {
   // Strip any messages with missing/empty content before sending
   const cleanHistory = history

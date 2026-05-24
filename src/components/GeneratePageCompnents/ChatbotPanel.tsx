@@ -136,7 +136,7 @@ export default function ChatbotPanel({ report, onUpdate }: Props) {
       {pendingReport && (
         <div className="shrink-0 rounded-xl border border-amber-200 bg-amber-50 p-3 space-y-2">
           <p className="text-xs font-semibold text-amber-800">Report update ready</p>
-          <p className="text-xs text-amber-700">Review the AI's suggested changes and apply or discard.</p>
+          <p className="text-xs text-amber-700">Review the AI&apos;s suggested changes and apply or discard.</p>
           <div className="flex gap-2">
             <button
               onClick={applyUpdate}

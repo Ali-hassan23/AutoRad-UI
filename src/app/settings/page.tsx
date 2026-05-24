@@ -31,7 +31,7 @@ export default function SettingsPage() {
     fetch("/api/users/me", { credentials: "include" })
       .then((r) => {
         if (r.status === 401) {
-          router.push("/login");
+          router.push("/auth");
           return null;
         }
         return r.json();
@@ -42,7 +42,7 @@ export default function SettingsPage() {
         setFullName(data.full_name ?? "");
         setEmail(data.email ?? "");
       })
-      .catch(() => router.push("/login"));
+      .catch(() => router.push("/auth"));
   }, [router]);
 
   /* ---------------- SAVE ---------------- */
@@ -90,7 +90,7 @@ export default function SettingsPage() {
     } catch (err) {
       console.error("Logout error:", err);
     } finally {
-      router.push("/login");
+      router.push("/auth");
       router.refresh();
     }
   };

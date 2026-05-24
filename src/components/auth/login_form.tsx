@@ -43,7 +43,7 @@ export function LoginForm() {
       formData.append("username", form.email);
       formData.append("password", form.password);
 
-      const res = await fetch(`api/auth/login`, {
+      const res = await fetch(`/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         body: formData.toString(),
@@ -78,19 +78,19 @@ export function LoginForm() {
   return (
     <div>
       <div className="mb-8 space-y-1">
-        <h2 className="text-2xl font-semibold text-slate-900">Log in</h2>
-        <p className="text-sm text-slate-500">Enter your credentials to continue</p>
+        <h2 className="text-2xl font-semibold text-foreground">Log in</h2>
+        <p className="text-sm text-muted-foreground">Enter your credentials to continue</p>
       </div>
 
       <form onSubmit={handleLogin} className="space-y-4">
         {errors.general && (
-          <div className="rounded-lg bg-red-50 border border-red-100 px-4 py-3 text-sm text-red-600">
+          <div className="rounded-lg bg-destructive/10 border border-destructive/20 px-4 py-3 text-sm text-destructive">
             {errors.general}
           </div>
         )}
 
         <div className="space-y-1.5">
-          <label className="text-xs font-medium uppercase tracking-[0.08em] text-slate-500">
+          <label className="text-xs font-medium uppercase tracking-[0.08em] text-muted-foreground">
             Email
           </label>
           <input
@@ -99,15 +99,15 @@ export function LoginForm() {
             onChange={(e) => updateField("email", e.target.value)}
             disabled={submitting}
             placeholder="you@example.com"
-            className="w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-900 placeholder-slate-400 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100 disabled:opacity-50"
+            className="w-full rounded-lg border border-border bg-card px-3.5 py-2.5 text-sm text-foreground placeholder-muted-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20 disabled:opacity-50"
           />
           {errors.email && (
-            <p className="text-xs text-red-500">{errors.email}</p>
+            <p className="text-xs text-destructive">{errors.email}</p>
           )}
         </div>
 
         <div className="space-y-1.5">
-          <label className="text-xs font-medium uppercase tracking-[0.08em] text-slate-500">
+          <label className="text-xs font-medium uppercase tracking-[0.08em] text-muted-foreground">
             Password
           </label>
           <input
@@ -116,33 +116,33 @@ export function LoginForm() {
             onChange={(e) => updateField("password", e.target.value)}
             disabled={submitting}
             placeholder="••••••••"
-            className="w-full rounded-lg border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-900 placeholder-slate-400 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100 disabled:opacity-50"
+            className="w-full rounded-lg border border-border bg-card px-3.5 py-2.5 text-sm text-foreground placeholder-muted-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20 disabled:opacity-50"
           />
           {errors.password && (
-            <p className="text-xs text-red-500">{errors.password}</p>
+            <p className="text-xs text-destructive">{errors.password}</p>
           )}
         </div>
 
         <button
           type="submit"
           disabled={submitting}
-          className="mt-2 h-11 w-full rounded-xl bg-blue-600 text-sm font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+          className="mt-2 h-11 w-full rounded-xl bg-primary text-sm font-semibold text-primary-foreground transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50 shadow-md"
         >
           {submitting ? "Logging in…" : "Log in"}
         </button>
       </form>
 
       <div className="my-5 flex items-center gap-3">
-        <div className="h-px flex-1 bg-slate-100" />
-        <span className="text-xs text-slate-400">or</span>
-        <div className="h-px flex-1 bg-slate-100" />
+        <div className="h-px flex-1 bg-border" />
+        <span className="text-xs text-muted-foreground">or</span>
+        <div className="h-px flex-1 bg-border" />
       </div>
 
       <button
         type="button"
         onClick={handleGoogleLogin}
         disabled={submitting}
-        className="flex h-11 w-full items-center justify-center gap-2.5 rounded-xl border border-slate-200 bg-white text-sm font-medium text-slate-700 transition hover:bg-slate-50 disabled:opacity-50"
+        className="flex h-11 w-full items-center justify-center gap-2.5 rounded-xl border border-border bg-card text-sm font-medium text-foreground transition hover:bg-muted/50 disabled:opacity-50"
       >
         <IconBrandGoogle className="h-4 w-4" />
         Continue with Google

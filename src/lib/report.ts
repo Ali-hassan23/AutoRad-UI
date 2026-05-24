@@ -18,7 +18,7 @@ export async function getReport(file: File) {
   return res.json();
 }
 
-export async function updateReport(id: string, report: any) {
+export async function updateReport(id: string, report: Record<string, unknown>) {
   const res = await fetch(`${API_URL}/generate/update`, {
     method: "PUT",
     headers: {
@@ -30,16 +30,12 @@ export async function updateReport(id: string, report: any) {
   if (!res.ok) {
     throw new Error("Failed to update report");
   }
-
-  
-
   return res.json();
 }
 
 export async function getReportById(id: string) {
-
   const res = await fetch(
-    `${API_URL}/generate/generate/${id}`,
+    `${API_URL}/generate/${id}`,
     { cache: "no-store" }
   );
 

@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
 
 /**
  * OAuth Callback Handler
@@ -10,7 +9,6 @@ import { useSearchParams } from "next/navigation";
  * This page handles the OAuth callback from Google and extracts tokens
  */
 export default function OAuthCallback() {
-  const searchParams = useSearchParams();
   const [status, setStatus] = useState<"loading" | "success" | "error">("loading");
   const [message, setMessage] = useState("Processing authentication...");
 
@@ -52,13 +50,13 @@ export default function OAuthCallback() {
         setMessage("Authentication failed. Redirecting to login...");
 
         setTimeout(() => {
-          window.location.href = "/login";
+          window.location.href = "/auth";
         }, 3000);
       }
     };
 
     handleCallback();
-  }, [searchParams]);
+  }, []);
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-50">

@@ -13,6 +13,10 @@ type Errors = {
   general?: string;
 };
 
+type FieldError = {
+  msg?: string;
+};
+
 export function SignupForm() {
   const router = useRouter();
 
@@ -56,7 +60,10 @@ export function SignupForm() {
       const data = await res.json();
       if (typeof data.detail === "string") message = data.detail;
       else if (Array.isArray(data.detail))
-        message = data.detail.map((e: any) => e.msg).join(", ");
+        message = data.detail
+          .map((e: FieldError) => e.msg)
+          .filter(Boolean)
+          .join(", ");
     } catch {
       message = res.statusText || message;
     }
@@ -105,7 +112,7 @@ export function SignupForm() {
       });
 
       if (!loginRes.ok) {
-        router.push("/login?registered=true");
+        router.push("/auth?registered=true");
         return;
       }
 
@@ -132,20 +139,20 @@ export function SignupForm() {
   };
 
   const inputCls =
-    "w-full rounded-lg border border-white/10 bg-slate-800/60 px-3 py-2 text-sm text-white placeholder-slate-500 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 disabled:opacity-50";
+    "w-full rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground placeholder-muted-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20 disabled:opacity-50";
 
   return (
     <div className="w-full">
       <div className="mb-4">
-        <h2 className="text-xl font-semibold text-white">Create account</h2>
-        <p className="text-xs text-slate-400 mt-0.5">
+        <h2 className="text-xl font-semibold text-foreground">Create account</h2>
+        <p className="text-xs text-muted-foreground mt-0.5">
           Join AutoRad and get started today
         </p>
       </div>
 
       <form className="space-y-2.5" onSubmit={handleSubmit}>
         {errors.general && (
-          <div className="rounded-lg border border-red-500/20 bg-red-500/10 px-3 py-2 text-xs text-red-400">
+          <div className="rounded-lg border border-destructive/20 bg-destructive/10 px-3 py-2 text-xs text-destructive">
             {errors.general}
           </div>
         )}
@@ -153,7 +160,7 @@ export function SignupForm() {
         {/* First + Last name side by side */}
         <div className="grid grid-cols-2 gap-2.5">
           <div>
-            <label className="mb-1 block text-[10px] font-medium uppercase tracking-wider text-slate-400">
+            <label className="mb-1 block text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
               First name
             </label>
             <input
@@ -164,11 +171,11 @@ export function SignupForm() {
               className={inputCls}
             />
             {errors.firstname && (
-              <p className="mt-0.5 text-[10px] text-red-400">{errors.firstname}</p>
+              <p className="mt-0.5 text-[10px] text-destructive">{errors.firstname}</p>
             )}
           </div>
           <div>
-            <label className="mb-1 block text-[10px] font-medium uppercase tracking-wider text-slate-400">
+            <label className="mb-1 block text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
               Last name
             </label>
             <input
@@ -179,14 +186,14 @@ export function SignupForm() {
               className={inputCls}
             />
             {errors.lastname && (
-              <p className="mt-0.5 text-[10px] text-red-400">{errors.lastname}</p>
+              <p className="mt-0.5 text-[10px] text-destructive">{errors.lastname}</p>
             )}
           </div>
         </div>
 
         {/* Email */}
         <div>
-          <label className="mb-1 block text-[10px] font-medium uppercase tracking-wider text-slate-400">
+          <label className="mb-1 block text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
             Email
           </label>
           <input
@@ -198,14 +205,14 @@ export function SignupForm() {
             className={inputCls}
           />
           {errors.email && (
-            <p className="mt-0.5 text-[10px] text-red-400">{errors.email}</p>
+            <p className="mt-0.5 text-[10px] text-destructive">{errors.email}</p>
           )}
         </div>
 
         {/* Password + Confirm side by side */}
         <div className="grid grid-cols-2 gap-2.5">
           <div>
-            <label className="mb-1 block text-[10px] font-medium uppercase tracking-wider text-slate-400">
+            <label className="mb-1 block text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
               Password
             </label>
             <input
@@ -217,11 +224,11 @@ export function SignupForm() {
               className={inputCls}
             />
             {errors.password && (
-              <p className="mt-0.5 text-[10px] text-red-400">{errors.password}</p>
+              <p className="mt-0.5 text-[10px] text-destructive">{errors.password}</p>
             )}
           </div>
           <div>
-            <label className="mb-1 block text-[10px] font-medium uppercase tracking-wider text-slate-400">
+            <label className="mb-1 block text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
               Confirm
             </label>
             <input
@@ -233,7 +240,7 @@ export function SignupForm() {
               className={inputCls}
             />
             {errors.confirmpassword && (
-              <p className="mt-0.5 text-[10px] text-red-400">{errors.confirmpassword}</p>
+              <p className="mt-0.5 text-[10px] text-destructive">{errors.confirmpassword}</p>
             )}
           </div>
         </div>
@@ -241,23 +248,23 @@ export function SignupForm() {
         <button
           type="submit"
           disabled={submitting}
-          className="mt-1 h-10 w-full rounded-xl bg-blue-600 text-sm font-semibold text-white transition hover:bg-blue-500 disabled:cursor-not-allowed disabled:opacity-50"
+          className="mt-1 h-10 w-full rounded-xl bg-primary text-sm font-semibold text-primary-foreground transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50 shadow-md"
         >
           {submitting ? "Creating account…" : "Create account"}
         </button>
       </form>
 
       <div className="my-3 flex items-center gap-3">
-        <div className="h-px flex-1 bg-white/10" />
-        <span className="text-[10px] text-slate-500">or</span>
-        <div className="h-px flex-1 bg-white/10" />
+        <div className="h-px flex-1 bg-border" />
+        <span className="text-[10px] text-muted-foreground">or</span>
+        <div className="h-px flex-1 bg-border" />
       </div>
 
       <button
         type="button"
         onClick={handleGoogleSignup}
         disabled={submitting}
-        className="flex h-10 w-full items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 text-sm font-medium text-slate-300 transition hover:bg-white/10 disabled:opacity-50"
+        className="flex h-10 w-full items-center justify-center gap-2 rounded-xl border border-border bg-muted/30 text-sm font-medium text-foreground transition hover:bg-muted/50 disabled:opacity-50"
       >
         <IconBrandGoogle className="h-4 w-4" />
         Continue with Google

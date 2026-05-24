@@ -189,7 +189,7 @@ export async function updateUserProfile(
 export function logout(): void {
   localStorage.removeItem("access_token");
   localStorage.removeItem("refresh_token");
-  window.location.href = "/login";
+  window.location.href = "/auth";
 }
 
 /**

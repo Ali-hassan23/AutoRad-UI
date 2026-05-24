@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 import { LoginForm } from "./login_form";
 import { SignupForm } from "./register_form";
 import Image from "next/image";
@@ -62,8 +62,8 @@ export default function AuthSwitcher() {
           hidden md:flex flex-col justify-between w-1/2 p-10
           transition-all duration-500 ease-in-out
           ${mode === "login"
-            ? "bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950"
-            : "bg-white border-r border-slate-100"}
+            ? "bg-gradient-to-br from-primary via-primary/90 to-secondary"
+            : "bg-white border-r border-border"}
         `}
       >
         {/* Logo — always present, just recoloured */}
@@ -71,10 +71,10 @@ export default function AuthSwitcher() {
           <Image src={'/logo.png'} alt="AutoRad Logo" width={120} height={120} />
           <span
             className={`font-semibold text-sm transition-colors duration-500 text-5xl ${
-              mode === "login" ? "text-white" : "text-slate-900"
+              mode === "login" ? "text-primary-foreground" : "text-foreground"
             }`}
           >
-            AutoRad
+            
           </span>
         </div>
 
@@ -88,13 +88,13 @@ export default function AuthSwitcher() {
                 : "opacity-0 translate-y-4 pointer-events-none absolute inset-0"
             }`}
           >
-            <p className="text-xs uppercase tracking-[0.14em] text-blue-300 mb-2">
+            <p className="text-xs uppercase tracking-[0.14em] text-secondary mb-2">
               Radiology AI
             </p>
-            <h1 className="text-3xl font-semibold text-white leading-snug mb-3">
+            <h1 className="text-3xl font-semibold text-primary-foreground leading-snug mb-3">
               Welcome back to AutoRad
             </h1>
-            <p className="text-slate-400 text-sm leading-relaxed max-w-xs mb-5">
+            <p className="text-primary-foreground/80 text-sm leading-relaxed max-w-xs mb-5">
               AI-assisted radiology reporting. Review, validate, and sign off
               on structured drafts in seconds.
             </p>
@@ -105,8 +105,8 @@ export default function AuthSwitcher() {
                 "SLA queue under 20s for 95% of jobs",
               ].map((feat) => (
                 <div key={feat} className="flex items-center gap-2.5">
-                  <div className="h-1.5 w-1.5 rounded-full bg-blue-400 flex-shrink-0" />
-                  <span className="text-slate-300 text-sm">{feat}</span>
+                  <div className="h-1.5 w-1.5 rounded-full bg-accent flex-shrink-0" />
+                  <span className="text-primary-foreground/90 text-sm">{feat}</span>
                 </div>
               ))}
             </div>
@@ -120,29 +120,29 @@ export default function AuthSwitcher() {
                 : "opacity-0 -translate-y-4 pointer-events-none absolute inset-0"
             }`}
           >
-            <p className="text-xs uppercase tracking-[0.14em] text-blue-600 mb-2">
+            <p className="text-xs uppercase tracking-[0.14em] text-primary font-semibold mb-2">
               Get started
             </p>
-            <h1 className="text-3xl font-semibold text-slate-900 leading-snug mb-3">
+            <h1 className="text-3xl font-semibold text-foreground leading-snug mb-3">
               Already have an account?
             </h1>
-            <p className="text-slate-500 text-sm leading-relaxed max-w-xs mb-5">
+            <p className="text-muted-foreground text-sm leading-relaxed max-w-xs mb-5">
               Log in to continue working on your radiology reports and access
               your workspace.
             </p>
             <button
               onClick={() => switchMode("login")}
-              className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-6 py-2.5 text-sm font-semibold text-slate-900 shadow-sm hover:bg-slate-50 transition"
+              className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-6 py-2.5 text-sm font-semibold text-foreground shadow-sm hover:bg-muted/30 transition"
             >
               Login to your account
-              <span className="text-slate-400">→</span>
+              <span className="text-muted-foreground">→</span>
             </button>
           </div>
         </div>
 
         <p
           className={`text-xs transition-colors duration-500 ${
-            mode === "login" ? "text-slate-600" : "text-slate-400"
+            mode === "login" ? "text-primary-foreground/70" : "text-muted-foreground"
           }`}
         >
           © {new Date().getFullYear()} AutoRad. All rights reserved.
@@ -156,22 +156,22 @@ export default function AuthSwitcher() {
           w-full md:w-1/2 px-5 sm:px-8 md:px-10
           transition-all duration-500 ease-in-out
           ${mode === "signup"
-            ? "bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950"
-            : "bg-white"}
+            ? "bg-gradient-to-br from-primary via-primary/90 to-secondary"
+            : "bg-background"}
         `}
       >
         {/* Mobile-only logo */}
         <div className="mb-6 flex items-center gap-3 md:hidden">
           <div
             className={`inline-flex h-9 w-9 items-center justify-center rounded-xl text-sm font-semibold transition-colors duration-500 ${
-              mode === "signup" ? "bg-white text-slate-900" : "bg-slate-900 text-white"
+              mode === "signup" ? "bg-card text-foreground" : "bg-primary text-primary-foreground"
             }`}
           >
             AR
           </div>
           <span
             className={`font-semibold text-sm transition-colors duration-500 ${
-              mode === "signup" ? "text-white" : "text-slate-900"
+              mode === "signup" ? "text-primary-foreground" : "text-foreground"
             }`}
           >
             AutoRad
@@ -191,7 +191,7 @@ export default function AuthSwitcher() {
 
           <p
             className={`mt-4 text-center text-xs transition-colors duration-500 ${
-              mode === "signup" ? "text-slate-400" : "text-slate-500"
+              mode === "signup" ? "text-primary-foreground/70" : "text-muted-foreground"
             }`}
           >
             {mode === "login" ? (
@@ -200,7 +200,7 @@ export default function AuthSwitcher() {
                 <button
                   onClick={() => switchMode("signup")}
                   disabled={animating}
-                  className="font-semibold text-blue-600 hover:text-blue-500 transition disabled:opacity-50"
+                  className="font-semibold text-primary hover:text-primary/80 transition disabled:opacity-50"
                 >
                   Sign up
                 </button>
@@ -211,7 +211,7 @@ export default function AuthSwitcher() {
                 <button
                   onClick={() => switchMode("login")}
                   disabled={animating}
-                  className="font-semibold text-blue-400 hover:text-blue-300 transition disabled:opacity-50"
+                  className="font-semibold text-secondary hover:text-secondary/80 transition disabled:opacity-50"
                 >
                   Log in
                 </button>
