@@ -1,7 +1,8 @@
 // app/dashboard/page.tsx
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { getUser } from "@/lib/auth";
+import { getUser } from "@/lib/auth-server";
+import SignOutButton from "@/components/auth/SignOutButton";
 
 export default async function DashboardPage() {
   const user = await getUser();
@@ -32,12 +33,9 @@ export default async function DashboardPage() {
               Settings
             </a>
           </nav>
-          <a
-            href="/auth"
-            className="rounded-full bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground shadow-sm hover:bg-primary/90 transition"
-          >
+          <SignOutButton className="rounded-full bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground shadow-sm hover:bg-primary/90 transition">
             Sign out
-          </a>
+          </SignOutButton>
         </div>
       </header>
 

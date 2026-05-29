@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { IconBrandGoogle } from "@tabler/icons-react";
 
 type Errors = {
@@ -19,6 +19,7 @@ type FieldError = {
 
 export function SignupForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   const [form, setForm] = useState({
     firstname: "",
@@ -116,7 +117,9 @@ export function SignupForm() {
         return;
       }
 
-      router.push("/dashboard");
+      // Redirect to the originally requested page or dashboard
+      const redirectTo = searchParams.get("redirect") || "/dashboard";
+      router.push(redirectTo);
       router.refresh();
     } catch (err) {
       const message =
@@ -144,8 +147,8 @@ export function SignupForm() {
   return (
     <div className="w-full">
       <div className="mb-4">
-        <h2 className="text-xl font-semibold text-foreground">Create account</h2>
-        <p className="text-xs text-muted-foreground mt-0.5">
+        <h2 className="text-xl font-semibold text-muted">Create account</h2>
+        <p className="text-xs text-muted mt-0.5">
           Join AutoRad and get started today
         </p>
       </div>
@@ -158,9 +161,9 @@ export function SignupForm() {
         )}
 
         {/* First + Last name side by side */}
-        <div className="grid grid-cols-2 gap-2.5">
+        <div className="grid grid-cols-2 gap-2.5 text-white">
           <div>
-            <label className="mb-1 block text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+            <label className="mb-1 block text-[10px] font-medium uppercase tracking-wider text-muted">
               First name
             </label>
             <input
@@ -175,7 +178,7 @@ export function SignupForm() {
             )}
           </div>
           <div>
-            <label className="mb-1 block text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+            <label className="mb-1 block text-[10px] font-medium uppercase tracking-wider text-muted">
               Last name
             </label>
             <input
@@ -193,7 +196,7 @@ export function SignupForm() {
 
         {/* Email */}
         <div>
-          <label className="mb-1 block text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+          <label className="mb-1 block text-[10px] font-medium uppercase tracking-wider text-muted">
             Email
           </label>
           <input
@@ -212,7 +215,7 @@ export function SignupForm() {
         {/* Password + Confirm side by side */}
         <div className="grid grid-cols-2 gap-2.5">
           <div>
-            <label className="mb-1 block text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+            <label className="mb-1 block text-[10px] font-medium uppercase tracking-wider text-muted">
               Password
             </label>
             <input
@@ -228,7 +231,7 @@ export function SignupForm() {
             )}
           </div>
           <div>
-            <label className="mb-1 block text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+            <label className="mb-1 block text-[10px] font-medium uppercase tracking-wider text-muted">
               Confirm
             </label>
             <input
@@ -248,7 +251,7 @@ export function SignupForm() {
         <button
           type="submit"
           disabled={submitting}
-          className="mt-1 h-10 w-full rounded-xl bg-primary text-sm font-semibold text-primary-foreground transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50 shadow-md"
+          className="mt-1 h-10 cursor-pointer w-full rounded-xl bg-primary text-sm font-semibold text-primary-foreground transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50 shadow-md"
         >
           {submitting ? "Creating account…" : "Create account"}
         </button>
@@ -264,7 +267,7 @@ export function SignupForm() {
         type="button"
         onClick={handleGoogleSignup}
         disabled={submitting}
-        className="flex h-10 w-full items-center justify-center gap-2 rounded-xl border border-border bg-muted/30 text-sm font-medium text-foreground transition hover:bg-muted/50 disabled:opacity-50"
+        className="flex h-10 w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-border bg-muted/30 text-sm font-medium text-foreground transition hover:bg-muted/50 disabled:opacity-50"
       >
         <IconBrandGoogle className="h-4 w-4" />
         Continue with Google

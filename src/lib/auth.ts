@@ -1,7 +1,4 @@
-// lib/auth.ts - Utility functions for authentication
-import { cookies } from "next/headers";
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+// lib/auth.ts - Client-safe authentication helpers
 
 export interface LoginCredentials {
   email: string;
@@ -40,7 +37,7 @@ export async function login(credentials: LoginCredentials): Promise<TokenRespons
   formData.append("username", credentials.email);
   formData.append("password", credentials.password);
 
-  const response = await fetch(`${API_URL}/auth/login`, {
+  const response = await fetch("/api/auth/login", {
     method: "POST",
     headers: {
       "Content-Type": "application/x-www-form-urlencoded",
@@ -61,7 +58,7 @@ export async function login(credentials: LoginCredentials): Promise<TokenRespons
  * Register a new user
  */
 export async function register(data: RegisterData): Promise<UserProfile> {
-  const response = await fetch(`${API_URL}/auth/register`, {
+  const response = await fetch("/api/auth/register", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -82,34 +79,11 @@ export async function register(data: RegisterData): Promise<UserProfile> {
 }
 
 /**
- * Refresh access token using refresh token
+ * Get current user profile from the cookie-backed session.
  */
-export async function refreshAccessToken(refreshToken: string): Promise<TokenResponse> {
-  const response = await fetch(`${API_URL}/auth/refresh`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ refresh_token: refreshToken }),
-    credentials: "include",
-  });
-
-  if (!response.ok) {
-    throw new Error("Failed to refresh token");
-  }
-
-  return response.json();
-}
-
-/**
- * Get current user profile
- */
-export async function getCurrentUser(accessToken: string): Promise<UserProfile> {
-  const response = await fetch(`${API_URL}/auth/me`, {
+export async function getCurrentUser(): Promise<UserProfile> {
+  const response = await fetch("/api/users/me", {
     method: "GET",
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
     credentials: "include",
   });
 
@@ -131,92 +105,20 @@ export interface User {
 }
 
 /**
- * Fetch the authenticated user from FastAPI.
- * This MUST only run on the server.
+ * Logout user by clearing the cookie-backed session.
+ * Note: Caller is responsible for navigation after logout completes.
  */
-export async function getUser(): Promise<User | null> {
+export async function logout(): Promise<void> {
   try {
-    const cookieStore = cookies();
-    const accessToken = (await cookieStore).get("access_token")?.value;
-
-    if (!accessToken) return null;
-
-    const backendUrl = process.env.BACKEND_URL || "http://localhost:8000";
-
-    const res = await fetch(`${backendUrl}/auth/me`, {
-      headers: {
-        Cookie: `access_token=${accessToken}`,
-      },
-      cache: "no-store",
+    await fetch("/api/auth/logout", {
+      method: "POST",
+      credentials: "include",
     });
-
-    if (!res.ok) return null;
-
-    return await res.json();
   } catch {
-    return null;
-  }
-}
-
-/**
- * Update user profile
- */
-export async function updateUserProfile(
-  accessToken: string,
-  data: { full_name?: string }
-): Promise<UserProfile> {
-  const params = new URLSearchParams();
-  if (data.full_name) params.append("full_name", data.full_name);
-
-  const response = await fetch(`${API_URL}/auth/me?${params.toString()}`, {
-    method: "PUT",
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-    credentials: "include",
-  });
-
-  if (!response.ok) {
-    throw new Error("Failed to update profile");
+    // Keep going even if the request fails
   }
 
-  return response.json();
-}
-
-/**
- * Logout user (client-side token removal)
- */
-export function logout(): void {
-  localStorage.removeItem("access_token");
-  localStorage.removeItem("refresh_token");
-  window.location.href = "/auth";
-}
-
-/**
- * Get access token from localStorage
- */
-export function getAccessToken(): string | null {
-  return localStorage.getItem("access_token");
-}
-
-/**
- * Get refresh token from localStorage
- */
-export function getRefreshToken(): string | null {
-  return localStorage.getItem("refresh_token");
-}
-
-/**
- * Store tokens in localStorage
- */
-export function storeTokens(tokens: TokenResponse): void {
-  localStorage.setItem("access_token", tokens.access_token);
-  localStorage.setItem("refresh_token", tokens.refresh_token);
-}
-
-/**
- * Check if user is authenticated
- */
-export function isAuthenticated(): boolean {
-  return !!getAccessToken();
+  if (typeof window !== "undefined") {
+    sessionStorage.removeItem("latest_report");
+  }
 }

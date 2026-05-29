@@ -6,8 +6,6 @@ import {
   register as apiRegister,
   logout as apiLogout,
   getCurrentUser,
-  getAccessToken,
-  storeTokens,
   type LoginCredentials,
   type RegisterData,
   type UserProfile,
@@ -22,11 +20,8 @@ export function useAuth() {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        const token = getAccessToken();
-        if (token) {
-          const userData = await getCurrentUser(token);
-          setUser(userData);
-        }
+        const userData = await getCurrentUser();
+        setUser(userData);
       } catch (err) {
         console.error("Auth check failed:", err);
         setUser(null);
@@ -43,10 +38,9 @@ export function useAuth() {
     setLoading(true);
     setError(null);
     try {
-      const tokens = await apiLogin(credentials);
-      storeTokens(tokens);
-      
-      const userData = await getCurrentUser(tokens.access_token);
+      await apiLogin(credentials);
+
+      const userData = await getCurrentUser();
       setUser(userData);
       
       return { success: true };
@@ -83,8 +77,8 @@ export function useAuth() {
   };
 
   // Logout function
-  const logout = () => {
-    apiLogout();
+  const logout = async () => {
+    await apiLogout();
     setUser(null);
   };
 

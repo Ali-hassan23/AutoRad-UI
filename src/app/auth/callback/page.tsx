@@ -5,8 +5,8 @@ import { useEffect, useState } from "react";
 /**
  * OAuth Callback Handler
  * Place this component at /app/auth/callback/page.tsx
- * 
- * This page handles the OAuth callback from Google and extracts tokens
+ *
+ * This page confirms the cookie-backed session is ready before redirecting.
  */
 export default function OAuthCallback() {
   const [status, setStatus] = useState<"loading" | "success" | "error">("loading");
@@ -15,35 +15,20 @@ export default function OAuthCallback() {
   useEffect(() => {
     const handleCallback = async () => {
       try {
-        // Get current URL to send to backend
-        const fullUrl = window.location.href;
-
-        // Make a request to complete the OAuth flow
-        const response = await fetch(fullUrl, {
+        const response = await fetch("/api/users/me", {
           credentials: "include",
         });
 
         if (!response.ok) {
-          throw new Error("Authentication failed");
-        }
-
-        const data = await response.json();
-
-        // Store tokens
-        if (data.access_token && data.refresh_token) {
-          localStorage.setItem("access_token", data.access_token);
-          localStorage.setItem("refresh_token", data.refresh_token);
-
-          setStatus("success");
-          setMessage("Login successful! Redirecting...");
-
-          // Redirect to dashboard after a short delay
-          setTimeout(() => {
-            window.location.href = "/dashboard";
-          }, 1500);
-        } else {
           throw new Error("Invalid response from server");
         }
+
+        setStatus("success");
+        setMessage("Login successful! Redirecting...");
+
+        setTimeout(() => {
+          window.location.href = "/dashboard";
+        }, 1500);
       } catch (error) {
         console.error("OAuth callback error:", error);
         setStatus("error");

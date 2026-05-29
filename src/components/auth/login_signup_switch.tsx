@@ -132,7 +132,7 @@ export default function AuthSwitcher() {
             </p>
             <button
               onClick={() => switchMode("login")}
-              className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-6 py-2.5 text-sm font-semibold text-foreground shadow-sm hover:bg-muted/30 transition"
+              className="inline-flex cursor-pointer items-center gap-2 rounded-full border border-border bg-card px-6 py-2.5 text-sm font-semibold text-foreground shadow-sm hover:bg-muted/30 transition"
             >
               Login to your account
               <span className="text-muted-foreground">→</span>
@@ -200,7 +200,7 @@ export default function AuthSwitcher() {
                 <button
                   onClick={() => switchMode("signup")}
                   disabled={animating}
-                  className="font-semibold text-primary hover:text-primary/80 transition disabled:opacity-50"
+                  className="font-semibold cursor-pointer text-primary hover:text-primary/80 transition disabled:opacity-50"
                 >
                   Sign up
                 </button>
@@ -211,7 +211,7 @@ export default function AuthSwitcher() {
                 <button
                   onClick={() => switchMode("login")}
                   disabled={animating}
-                  className="font-semibold text-secondary hover:text-secondary/80 transition disabled:opacity-50"
+                  className="font-semibold text-muted underline cursor-pointer hover:text-secondary/80 transition disabled:opacity-50"
                 >
                   Log in
                 </button>

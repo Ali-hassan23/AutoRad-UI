@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { IconBrandGoogle } from "@tabler/icons-react";
 
 type Errors = {
@@ -12,6 +12,7 @@ type Errors = {
 
 export function LoginForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [form, setForm] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState<Errors>({});
   const [submitting, setSubmitting] = useState(false);
@@ -55,7 +56,9 @@ export function LoginForm() {
         throw new Error(errorData.detail || "Login failed");
       }
 
-      router.push("/dashboard");
+      // Redirect to the originally requested page or dashboard
+      const redirectTo = searchParams.get("redirect") || "/dashboard";
+      router.push(redirectTo);
       router.refresh();
     } catch (err) {
       const message = err instanceof Error ? err.message : "Invalid credentials";
@@ -126,7 +129,7 @@ export function LoginForm() {
         <button
           type="submit"
           disabled={submitting}
-          className="mt-2 h-11 w-full rounded-xl bg-primary text-sm font-semibold text-primary-foreground transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50 shadow-md"
+          className="mt-2 h-11 cursor-pointer w-full rounded-xl bg-primary text-sm font-semibold text-primary-foreground transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50 shadow-md"
         >
           {submitting ? "Logging in…" : "Log in"}
         </button>
@@ -142,7 +145,7 @@ export function LoginForm() {
         type="button"
         onClick={handleGoogleLogin}
         disabled={submitting}
-        className="flex h-11 w-full items-center justify-center gap-2.5 rounded-xl border border-border bg-card text-sm font-medium text-foreground transition hover:bg-muted/50 disabled:opacity-50"
+        className="flex h-11 w-full cursor-pointer items-center justify-center gap-2.5 rounded-xl border border-border bg-card text-sm font-medium text-foreground transition hover:bg-muted/50 disabled:opacity-50"
       >
         <IconBrandGoogle className="h-4 w-4" />
         Continue with Google

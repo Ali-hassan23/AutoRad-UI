@@ -15,15 +15,16 @@ export async function POST(
   
   try {
     const contentType = request.headers.get("content-type") || "";
-    const cookieHeader = request.headers.get("cookie");
-    let body: string;
-    
-    if (contentType.includes("application/x-www-form-urlencoded")) {
-      body = await request.text();
-    } else {
-      const jsonBody = await request.json();
-      body = JSON.stringify(jsonBody);
-    }
+const cookieHeader = request.headers.get("cookie");
+
+let body: string | undefined;
+
+if (
+  contentType.includes("application/json") ||
+  contentType.includes("application/x-www-form-urlencoded")
+) {
+  body = await request.text();
+}
 
     const response = await fetch(`${BACKEND_URL}/auth/${path}`, {
       method: "POST",
@@ -31,7 +32,7 @@ export async function POST(
         "Content-Type": contentType,
         ...(cookieHeader && { Cookie: cookieHeader }),
       },
-      body: body,
+      ...(body && { body }),
       credentials: "include",
     });
 
@@ -48,6 +49,17 @@ export async function POST(
     setCookieHeaders.forEach((cookie) => {
       nextResponse.headers.append("set-cookie", cookie);
     });
+
+    if (path === "logout") {
+      nextResponse.cookies.set("access_token", "", {
+        path: "/",
+        maxAge: 0,
+      });
+      nextResponse.cookies.set("refresh_token", "", {
+        path: "/",
+        maxAge: 0,
+      });
+    }
     
     return nextResponse;
   } catch (error) {

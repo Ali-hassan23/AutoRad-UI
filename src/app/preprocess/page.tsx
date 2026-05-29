@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { getUser } from "@/lib/auth";
+import { getUser } from "@/lib/auth-server";
 import SystemInfo from "@/components/UploadPageComponents/SystemInfo";
 import UploadPanel from "@/components/UploadPageComponents/UploadPanel";
 import Image from "next/image";

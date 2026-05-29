@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import SignOutButton from "@/components/auth/SignOutButton";
 
 type User = {
   id: number;
@@ -79,22 +80,6 @@ export default function SettingsPage() {
     }
   }
 
-  /* ---------------- LOGOUT ---------------- */
-
-  const handleLogout = async () => {
-    try {
-      await fetch("/api/auth/logout", {
-        method: "POST",
-        credentials: "include",
-      });
-    } catch (err) {
-      console.error("Logout error:", err);
-    } finally {
-      router.push("/auth");
-      router.refresh();
-    }
-  };
-
   const isDirty =
     user &&
     (fullName !== (user.full_name ?? "") || email !== user.email);
@@ -128,12 +113,9 @@ export default function SettingsPage() {
             </Link>
           </nav>
 
-          <button
-            onClick={handleLogout}
-            className="rounded-full bg-white px-4 py-2 text-xs font-semibold text-slate-900 shadow-sm hover:bg-slate-100"
-          >
+          <SignOutButton className="rounded-full bg-white px-4 py-2 text-xs font-semibold text-slate-900 shadow-sm hover:bg-slate-100">
             Sign out
-          </button>
+          </SignOutButton>
         </div>
       </header>
 
@@ -216,12 +198,9 @@ export default function SettingsPage() {
                 {new Date(user.created_at).toLocaleDateString()}
               </p>
 
-              <button
-                onClick={handleLogout}
-                className="mt-6 w-full bg-red-500 text-white py-2 rounded"
-              >
+              <SignOutButton className="mt-6 w-full bg-red-500 text-white py-2 rounded">
                 Sign out
-              </button>
+              </SignOutButton>
             </section>
           </div>
         )}
