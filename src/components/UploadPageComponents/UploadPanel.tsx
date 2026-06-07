@@ -1,9 +1,13 @@
 "use client";
 
 import { predictXray } from "@/lib/preprocess";
-import { getReport } from "@/lib/report";
+import { createStudyAndAnalyze, type PatientMetadata } from "@/lib/studies";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import PatientDetailsSection, {
+  canGenerateReport,
+  emptyPatient,
+} from "./PatientDetailsSection";
 
 type Result = {
   is_xray: boolean;
@@ -18,15 +22,21 @@ export default function UploadPanel() {
 
   const [file, setFile] = useState<File | null>(null);
   const [result, setResult] = useState<Result | null>(null);
+  const [patient, setPatient] = useState<PatientMetadata>(emptyPatient);
+  const [patientExpanded, setPatientExpanded] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [state, setState] = useState<
     "idle" | "loading" | "valid" | "invalid"
   >("idle");
 
+  const readyToValidate = canGenerateReport(file, patientExpanded, patient);
+
   async function handlePredict() {
-    if (!file) return;
+    if (!file || !readyToValidate) return;
 
     try {
       setState("loading");
+      setError(null);
 
       const res: Result = await predictXray(file);
 
@@ -34,34 +44,38 @@ export default function UploadPanel() {
         setResult(res);
         setState("valid");
       } else {
-        setResult(res);         // keep result so we can show the reason
+        setResult(res);
         setState("invalid");
       }
     } catch (e) {
       console.error(e);
       setState("invalid");
+      setError("Validation failed. Please try again.");
     }
   }
 
   async function handleProceed() {
-  if (!file) return;
-  setState("loading");
+    if (!file || !readyToValidate) return;
+    setState("loading");
+    setError(null);
 
-  try {
-    const res = await getReport(file);
-    console.log("Report generation successful:", res);
-    sessionStorage.setItem("latest_report", JSON.stringify(res));
-    console.log("Report stored in sessionStorage:", sessionStorage.getItem("latest_report"));
-    router.push("/generate");
-  } catch (e) {
-    console.error(e);
-    setState("invalid");
+    try {
+      const res = await createStudyAndAnalyze(file, {
+        ...patient,
+        mrn: patient.mrn.trim(),
+      });
+      router.push(`/generate/${res.study_id}`);
+    } catch (e) {
+      console.error(e);
+      setState("invalid");
+      setError(e instanceof Error ? e.message : "Report generation failed.");
+    }
   }
-}
 
   function reset() {
     setFile(null);
     setResult(null);
+    setError(null);
     setState("idle");
   }
 
@@ -73,6 +87,13 @@ export default function UploadPanel() {
           Upload Scan (PNG/JPG)
         </h2>
 
+        <PatientDetailsSection
+          value={patient}
+          onChange={setPatient}
+          expanded={patientExpanded}
+          onExpandedChange={setPatientExpanded}
+        />
+
         <input
           type="file"
           accept="image/jpg, image/jpeg, image/png"
@@ -80,10 +101,17 @@ export default function UploadPanel() {
             setFile(e.target.files?.[0] || null);
             setResult(null);
             setState("idle");
+            setError(null);
           }}
           className="mt-6 block w-full cursor-pointer rounded-lg border border-gray-300 p-3 text-sm
           file:mr-4 file:rounded-md file:border-0 file:bg-blue-600 file:px-4 file:py-2 file:text-white hover:file:bg-blue-700"
         />
+
+        {!patientExpanded && state === "idle" && (
+          <p className="mt-3 text-xs text-amber-700">
+            Expand Patient details and enter MRN before validating or generating.
+          </p>
+        )}
 
         {state === "valid" && result && (
           <div className="mt-6 rounded-lg bg-green-50 p-4 text-sm space-y-1">
@@ -100,7 +128,13 @@ export default function UploadPanel() {
           </div>
         )}
 
-        {state === "invalid" && !result && (
+        {error && (
+          <div className="mt-6 rounded-lg bg-red-50 p-4 text-sm text-red-700">
+            {error}
+          </div>
+        )}
+
+        {state === "invalid" && !result && !error && (
           <div className="mt-6 rounded-lg bg-red-50 p-4 text-sm text-red-700">
             Validation failed. Please try again.
           </div>
@@ -109,10 +143,10 @@ export default function UploadPanel() {
         {state === "idle" && (
           <button
             onClick={handlePredict}
-            disabled={!file}
+            disabled={!readyToValidate}
             className="mt-6 w-full rounded-xl bg-blue-600 px-4 py-3 font-medium text-white hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Generate Report
+            Validate image
           </button>
         )}
 
@@ -128,9 +162,10 @@ export default function UploadPanel() {
         {state === "valid" && (
           <button
             onClick={handleProceed}
-            className="mt-6 w-full rounded-xl bg-green-600 px-4 py-3 text-white hover:bg-green-700"
+            disabled={!readyToValidate}
+            className="mt-6 w-full rounded-xl bg-green-600 px-4 py-3 text-white hover:bg-green-700 disabled:opacity-50"
           >
-            Proceed Further
+            Generate report
           </button>
         )}
 

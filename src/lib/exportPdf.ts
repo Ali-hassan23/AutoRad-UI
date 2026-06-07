@@ -1,4 +1,9 @@
 import jsPDF from "jspdf";
+import { studyHeatmapUrl, studyImageUrl } from "@/lib/studies";
+
+export type ExportPdfOptions = {
+  studyId?: string;
+};
 
 const COLORS = {
   headerBg: [15, 23, 42] as [number, number, number],
@@ -35,6 +40,22 @@ function parseSection(report: string, heading: string): string {
   return report.match(pattern)?.[1]?.trim() ?? "";
 }
 
+async function fetchImageDataUrl(url: string): Promise<string | null> {
+  try {
+    const res = await fetch(url, { credentials: "include" });
+    if (!res.ok) return null;
+    const blob = await res.blob();
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.onloadend = () => resolve(reader.result as string);
+      reader.onerror = () => resolve(null);
+      reader.readAsDataURL(blob);
+    });
+  } catch {
+    return null;
+  }
+}
+
 function parseFields(block: string): { label: string; value: string }[] {
   return block
     .split("\n")
@@ -46,7 +67,10 @@ function parseFields(block: string): { label: string; value: string }[] {
     .filter((f) => f.label.length > 0);
 }
 
-export function exportReportPDF(report: string) {
+export async function exportReportPDF(
+  report: string,
+  options?: ExportPdfOptions,
+) {
   const doc = new jsPDF({ unit: "mm", format: "a4" });
   const now = new Date();
   let y = 0;
@@ -247,6 +271,49 @@ export function exportReportPDF(report: string) {
     MARGIN, y,
     { maxWidth: CONTENT_W },
   );
+
+  if (options?.studyId) {
+    const [originalDataUrl, heatmapDataUrl] = await Promise.all([
+      fetchImageDataUrl(studyImageUrl(options.studyId)),
+      fetchImageDataUrl(studyHeatmapUrl(options.studyId)),
+    ]);
+
+    if (originalDataUrl && heatmapDataUrl) {
+      doc.addPage();
+      y = 16;
+      drawWatermark();
+
+      drawSectionHeader("AI ATTENTION MAP");
+
+      const imgW = 85;
+      const imgH = 85;
+      const gap = 6;
+      const totalW = imgW * 2 + gap;
+      const startX = MARGIN + (CONTENT_W - totalW) / 2;
+
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(8);
+      doc.setTextColor(...COLORS.sectionText);
+      doc.text("Original", startX + imgW / 2, y, { align: "center" });
+      doc.text("Model attention", startX + imgW + gap + imgW / 2, y, { align: "center" });
+      y += 4;
+
+      const format = originalDataUrl.startsWith("data:image/png") ? "PNG" : "JPEG";
+      doc.addImage(originalDataUrl, format, startX, y, imgW, imgH);
+      doc.addImage(heatmapDataUrl, "PNG", startX + imgW + gap, y, imgW, imgH);
+
+      y += imgH + 8;
+      doc.setFont("helvetica", "italic");
+      doc.setFontSize(7.5);
+      doc.setTextColor(...COLORS.labelColor);
+      doc.text(
+        "Grad-CAM attention map showing where the image encoder focused during analysis. Not pathology-specific. For review support only.",
+        MARGIN,
+        y,
+        { maxWidth: CONTENT_W },
+      );
+    }
+  }
 
   doc.save(`radiology_report_${now.toISOString().slice(0, 10)}.pdf`);
 }

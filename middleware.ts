@@ -6,7 +6,7 @@ import type { NextRequest } from "next/server";
 /**
  * Routes that REQUIRE authentication
  */
-const protectedRoutes = ["/dashboard", "/generate", "/preprocess", "/settings"];
+const protectedRoutes = ["/dashboard", "/generate", "/preprocess", "/settings", "/history"];
 
 /**
  * Routes that should NOT be accessible if already logged in
@@ -96,6 +96,8 @@ export const config = {
     "/preprocess/:path*",
     "/settings",
     "/settings/:path*",
+    "/history",
+    "/history/:path*",
     "/auth",
     "/auth/:path*",
   ],
