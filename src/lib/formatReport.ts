@@ -1,4 +1,7 @@
+import type { PatientMetadata } from "@/lib/studies";
+
 type ReportLike = {
+  display_id?: string;
   refined_report?: string;
   raw_report?: string;
   is_xray?: boolean;
@@ -7,7 +10,13 @@ type ReportLike = {
   processing_time_seconds?: number | string;
   filename?: string;
   gate_reason?: string;
+  patient?: PatientMetadata;
 };
+
+function pad(value: string | undefined | null, width = 20): string {
+  const v = value?.trim() || "";
+  return v;
+}
 
 export function formatReport(report: unknown): string {
   if (typeof report === "string") return report;
@@ -17,6 +26,7 @@ export function formatReport(report: unknown): string {
       ? (report as ReportLike)
       : {};
 
+  const patient = data.patient;
   const refined = data.refined_report || data.raw_report || "";
 
   const findingsMatch = refined.match(/FINDINGS:\s*([\s\S]*?)(?=IMPRESSION:|$)/i);
@@ -37,20 +47,20 @@ export function formatReport(report: unknown): string {
   return `
 PATIENT INFORMATION
 ───────────────────────────────────
-Patient Name        :
-MRN / Patient ID    :
-Date of Birth       :
-Age                 :
-Gender              :
-Referring Physician :
-Ward / OPD          :
+Patient Name        : ${pad(patient?.patient_name)}
+MRN / Patient ID    : ${pad(patient?.mrn)}
+Date of Birth       : ${pad(patient?.date_of_birth)}
+Age                 : ${pad(patient?.age)}
+Gender              : ${pad(patient?.gender)}
+Referring Physician : ${pad(patient?.referring_physician)}
+Ward / OPD          : ${pad(patient?.ward_opd)}
 
 STUDY INFORMATION
 ───────────────────────────────────
 Modality            : ${modality}
 Body Part           : ${bodyPart}
 Filename            : ${data.filename || "Unknown"}
-Clinical Indication :
+Clinical Indication : ${pad(patient?.clinical_indication)}
 Technique           :
 Comparison Study    :
 Gate Confidence     : ${confidence}
@@ -75,4 +85,50 @@ Designation         :
 Signature           :
 Date of Report      :
 `.trim();
+}
+
+/** Build formatReport input from study detail API response */
+export function studyDetailToReportInput(detail: {
+  display_id: string;
+  filename?: string;
+  patient: PatientMetadata;
+  is_xray?: boolean;
+  is_chest_xray?: boolean;
+  gate_confidence?: string;
+  gate_reason?: string;
+  processing_time_seconds?: number;
+  report: {
+    edited_content?: string;
+    refined_report: string;
+    raw_report: string;
+  };
+}): ReportLike {
+  const edited = detail.report.edited_content;
+  if (edited) {
+    return {
+      display_id: detail.display_id,
+      patient: detail.patient,
+      refined_report: edited,
+      raw_report: detail.report.raw_report,
+      is_xray: detail.is_xray,
+      is_chest_xray: detail.is_chest_xray,
+      gate_confidence: detail.gate_confidence,
+      gate_reason: detail.gate_reason,
+      processing_time_seconds: detail.processing_time_seconds,
+      filename: detail.filename,
+    };
+  }
+
+  return {
+    display_id: detail.display_id,
+    patient: detail.patient,
+    refined_report: detail.report.refined_report,
+    raw_report: detail.report.raw_report,
+    is_xray: detail.is_xray,
+    is_chest_xray: detail.is_chest_xray,
+    gate_confidence: detail.gate_confidence,
+    gate_reason: detail.gate_reason,
+    processing_time_seconds: detail.processing_time_seconds,
+    filename: detail.filename,
+  };
 }

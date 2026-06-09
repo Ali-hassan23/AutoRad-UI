@@ -1,5 +1,3 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-
 type ChatHistoryMessage = {
   role: string;
   content: string;
@@ -15,8 +13,9 @@ export async function chatWithReport(
     .filter(m => m.role && m.content && m.content.trim() !== "")
     .map(m => ({ role: m.role, content: m.content }));
 
-  const res = await fetch(`${API_URL}/chat/report`, {
+  const res = await fetch("/api/chat/report", {
     method: "POST",
+    credentials: "include",
     headers: {
       "Content-Type": "application/json"
     },

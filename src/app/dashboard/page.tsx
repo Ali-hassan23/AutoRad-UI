@@ -2,11 +2,14 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getUser } from "@/lib/auth-server";
+import { getStudiesSummary } from "@/lib/studies-server";
 import SignOutButton from "@/components/auth/SignOutButton";
 
 export default async function DashboardPage() {
   const user = await getUser();
   if (!user) redirect("/auth");
+
+  const { total: reportsCount, lastActivity } = await getStudiesSummary();
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background via-sky-50 to-white text-foreground">
@@ -29,6 +32,9 @@ export default async function DashboardPage() {
             <a href="/preprocess" className="hover:text-foreground transition">
               Generate Reports
             </a>
+            <Link href="/history" className="hover:text-foreground transition">
+              History
+            </Link>
             <a href="/settings" className="hover:text-foreground transition">
               Settings
             </a>
@@ -153,13 +159,20 @@ export default async function DashboardPage() {
             <div className="space-y-5">
               <div className="flex items-center justify-between rounded-xl border border-border bg-muted/30 px-4 py-3">
                 <span className="text-muted-foreground">Reports generated</span>
-                <span className="text-2xl font-semibold text-primary">0</span>
+                <span className="text-2xl font-semibold text-primary">{reportsCount}</span>
               </div>
 
               <div className="flex items-center justify-between rounded-xl border border-border bg-muted/30 px-4 py-3">
                 <span className="text-muted-foreground">Last activity</span>
-                <span className="text-sm text-foreground">—</span>
+                <span className="text-sm text-foreground">{lastActivity ?? "—"}</span>
               </div>
+
+              <Link
+                href="/history"
+                className="block text-center text-sm font-medium text-primary hover:text-primary/80"
+              >
+                View report history →
+              </Link>
 
               <div className="grid gap-3 sm:grid-cols-2">
                 <div className="rounded-xl border border-secondary/30 bg-secondary/5 px-4 py-3 text-sm text-foreground">
