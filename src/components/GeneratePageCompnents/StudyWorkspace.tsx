@@ -136,7 +136,7 @@ export default function StudyWorkspace({ studyId, mode }: Props) {
             </p>
           </div>
 
-          <div className="mt-6 grid gap-6 lg:grid-cols-[1fr_280px]">
+          <div className="mt-6 grid gap-6">
             <div className="rounded-3xl border border-secondary/20 bg-card/95 p-6 shadow-2xl backdrop-blur">
               <div className="mb-6">
                 <HeatmapViewer studyId={studyId} />

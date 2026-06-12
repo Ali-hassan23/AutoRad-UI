@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { LoginForm } from "./login_form";
 import { SignupForm } from "./register_form";
-import Image from "next/image";
 
 type Mode = "login" | "signup";
 
@@ -66,20 +65,10 @@ export default function AuthSwitcher() {
             : "bg-white border-r border-border"}
         `}
       >
-        {/* Logo — always present, just recoloured */}
-        <div className="flex items-center gap-3">
-          <Image src={'/logo.png'} alt="AutoRad Logo" width={120} height={120} />
-          <span
-            className={`font-semibold text-sm transition-colors duration-500 text-5xl ${
-              mode === "login" ? "text-primary-foreground" : "text-foreground"
-            }`}
-          >
-            
-          </span>
-        </div>
-
-        {/* Copy block — crossfades between login and signup messaging */}
-        <div className="relative space-y-5 overflow-hidden">
+        <div />
+        
+        {/* Copy block — left aligned with padding — crossfades between login and signup messaging */}
+        <div className="relative space-y-5 overflow-hidden pl-4">
           {/* Login copy */}
           <div
             className={`transition-all duration-500 ease-in-out ${
@@ -92,7 +81,7 @@ export default function AuthSwitcher() {
               Radiology AI
             </p>
             <h1 className="text-3xl font-semibold text-primary-foreground leading-snug mb-3">
-              Welcome back to AutoRad
+              Welcome back to <span className="text-4xl font-bold">AutoRad AI</span>
             </h1>
             <p className="text-primary-foreground/80 text-sm leading-relaxed max-w-xs mb-5">
               AI-assisted radiology reporting. Review, validate, and sign off
@@ -123,6 +112,7 @@ export default function AuthSwitcher() {
             <p className="text-xs uppercase tracking-[0.14em] text-primary font-semibold mb-2">
               Get started
             </p>
+            
             <h1 className="text-3xl font-semibold text-foreground leading-snug mb-3">
               Already have an account?
             </h1>

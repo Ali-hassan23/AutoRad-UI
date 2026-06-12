@@ -41,6 +41,34 @@ export default function PatientDetailsSection({
     onChange({ ...value, [field]: v });
   };
 
+  const calculateAge = (dateOfBirth: string): string => {
+    if (!dateOfBirth) return "";
+    try {
+      const birthDate = new Date(dateOfBirth);
+      if (isNaN(birthDate.getTime())) return "";
+      
+      const today = new Date();
+      let age = today.getFullYear() - birthDate.getFullYear();
+      const monthDiff = today.getMonth() - birthDate.getMonth();
+      
+      if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+      }
+      
+      return age >= 0 ? age.toString() : "";
+    } catch {
+      return "";
+    }
+  };
+
+  const handleDateOfBirthChange = (dateStr: string) => {
+    set("date_of_birth", dateStr);
+    const calculatedAge = calculateAge(dateStr);
+    if (calculatedAge) {
+      onChange({ ...value, date_of_birth: dateStr, age: calculatedAge });
+    }
+  };
+
   const applyLookup = useCallback(
     (result: PatientLookupResult) => {
       if (!result.found || !result.patient) {
@@ -151,7 +179,7 @@ export default function PatientDetailsSection({
           )}
 
           <div>
-            <label className="block text-xs font-medium text-gray-700">Patient name</label>
+            <label className="block text-xs font-medium text-gray-700">Patient name<span className="text-red-600">*</span></label>
             <input
               type="text"
               value={value.patient_name || ""}
@@ -161,12 +189,11 @@ export default function PatientDetailsSection({
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-medium text-gray-700">Date of birth</label>
+              <label className="block text-xs font-medium text-gray-700">Date of birth <span className="text-red-600">*</span></label>
               <input
-                type="text"
+                type="date"
                 value={value.date_of_birth || ""}
-                onChange={(e) => set("date_of_birth", e.target.value)}
-                placeholder="YYYY-MM-DD"
+                onChange={(e) => handleDateOfBirthChange(e.target.value)}
                 className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm"
               />
             </div>
@@ -181,7 +208,7 @@ export default function PatientDetailsSection({
             </div>
           </div>
           <div>
-            <label className="block text-xs font-medium text-gray-700">Gender</label>
+            <label className="block text-xs font-medium text-gray-700">Gender <span className="text-red-600">*</span></label>
             <select
               value={value.gender || ""}
               onChange={(e) => set("gender", e.target.value)}
@@ -194,7 +221,7 @@ export default function PatientDetailsSection({
             </select>
           </div>
           <div>
-            <label className="block text-xs font-medium text-gray-700">Referring physician</label>
+            <label className="block text-xs font-medium text-gray-700">Referring physician <span className="text-red-600">*</span></label>
             <input
               type="text"
               value={value.referring_physician || ""}
@@ -232,5 +259,13 @@ export function canGenerateReport(
   patientExpanded: boolean,
   patient: PatientMetadata
 ): boolean {
-  return Boolean(file && patientExpanded && patient.mrn.trim().length > 0);
+  return Boolean(
+    file &&
+      patientExpanded &&
+      (patient.mrn || "").trim().length > 0 &&
+      (patient.patient_name || "").trim().length > 0 &&
+      (patient.date_of_birth || "").trim().length > 0 &&
+      (patient.gender || "").trim().length > 0 &&
+      (patient.referring_physician || "").trim().length > 0
+  );
 }

@@ -3,6 +3,7 @@ import { getUser } from "@/lib/auth-server";
 import SystemInfo from "@/components/UploadPageComponents/SystemInfo";
 import UploadPanel from "@/components/UploadPageComponents/UploadPanel";
 import Image from "next/image";
+import Link from "next/link";
 
 export default async function GeneratePage() {
   const user = await getUser();
@@ -15,17 +16,20 @@ export default async function GeneratePage() {
       <header className="sticky top-0 z-10 border-b border-border bg-white/90 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
           <div className="flex items-center gap-3">
-            <div className="inline-flex items-center justify-center">
-              <Image src={'/logo.png'} alt="AutoRad Logo" width={36} height={36} />
+            <div className="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-primary text-base font-semibold text-primary-foreground">
+              AR
             </div>
             <div>
-              <p className="text-sm font-semibold leading-tight text-foreground">AutoRad</p>
-              <p className="text-[11px] text-muted-foreground">Radiology AI workspace</p>
+              <p className="text-lg font-semibold leading-tight text-foreground">AutoRad</p>
+              <p className="text-[12px] text-muted-foreground">Radiology AI workspace</p>
             </div>
           </div>
           <nav className="hidden items-center gap-6 text-sm font-medium text-muted-foreground md:flex">
             <a href="/dashboard" className="hover:text-foreground transition">Dashboard</a>
             <a href="/preprocess" className="text-primary font-semibold">Generate Reports</a>
+            <Link href="/history" className="hover:text-foreground transition">
+              History
+            </Link>
             <a href="/settings" className="hover:text-foreground transition">Settings</a>
           </nav>
           <a
