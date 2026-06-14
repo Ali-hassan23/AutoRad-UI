@@ -104,7 +104,7 @@ export default function UploadPanel() {
             setError(null);
           }}
           className="mt-6 block w-full cursor-pointer rounded-lg border border-gray-300 p-3 text-sm
-          file:mr-4 file:rounded-md file:border-0 file:bg-blue-600 file:px-4 file:py-2 file:text-white hover:file:bg-blue-700"
+          file:mr-4 file:rounded-md file:border-0 file:bg-emerald-600 file:px-4 file:py-2 file:text-white hover:file:bg-emerald-700"
         />
 
         {!patientExpanded && state === "idle" && (
@@ -144,7 +144,7 @@ export default function UploadPanel() {
           <button
             onClick={handlePredict}
             disabled={!readyToValidate}
-            className="mt-6 w-full rounded-xl bg-blue-600 px-4 py-3 font-medium text-white hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="mt-6 w-full rounded-xl bg-emerald-600 px-4 py-3 font-medium text-white hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Validate image
           </button>

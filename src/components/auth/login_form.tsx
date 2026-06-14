@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { IconBrandGoogle } from "@tabler/icons-react";
+import { IconBrandGoogle, IconEye, IconEyeOff } from "@tabler/icons-react";
 
 type Errors = {
   email?: string;
@@ -16,6 +16,7 @@ export function LoginForm() {
   const [form, setForm] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState<Errors>({});
   const [submitting, setSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const validate = () => {
     const newErrors: Errors = {};
@@ -26,8 +27,10 @@ export function LoginForm() {
     }
     if (!form.password) {
       newErrors.password = "Password is required";
-    } else if (form.password.length < 6) {
-      newErrors.password = "Password must be at least 6 characters";
+    } else if (form.password.length < 8) {
+      newErrors.password = "Password must be at least 8 characters";
+    } else if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(form.password)) {
+      newErrors.password = "Password must contain a special character";
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -113,14 +116,28 @@ export function LoginForm() {
           <label className="text-xs font-medium uppercase tracking-[0.08em] text-muted-foreground">
             Password
           </label>
-          <input
-            type="password"
-            value={form.password}
-            onChange={(e) => updateField("password", e.target.value)}
-            disabled={submitting}
-            placeholder="••••••••"
-            className="w-full rounded-lg border border-border bg-card px-3.5 py-2.5 text-sm text-foreground placeholder-muted-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20 disabled:opacity-50"
-          />
+          <div className="relative">
+            <input
+              type={showPassword ? "text" : "password"}
+              value={form.password}
+              onChange={(e) => updateField("password", e.target.value)}
+              disabled={submitting}
+              placeholder="••••••••"
+              className="w-full rounded-lg border border-border bg-card px-3.5 py-2.5 pr-10 text-sm text-foreground placeholder-muted-foreground outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/20 disabled:opacity-50"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              disabled={submitting}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition disabled:opacity-50"
+            >
+              {showPassword ? (
+                <IconEyeOff size={18} />
+              ) : (
+                <IconEye size={18} />
+              )}
+            </button>
+          </div>
           {errors.password && (
             <p className="text-xs text-destructive">{errors.password}</p>
           )}

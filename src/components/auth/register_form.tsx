@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { IconBrandGoogle } from "@tabler/icons-react";
+import { IconBrandGoogle, IconEye, IconEyeOff } from "@tabler/icons-react";
 
 type Errors = {
   firstname?: string;
@@ -31,6 +31,8 @@ export function SignupForm() {
 
   const [errors, setErrors] = useState<Errors>({});
   const [submitting, setSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const validate = () => {
     const newErrors: Errors = {};
@@ -43,8 +45,10 @@ export function SignupForm() {
     }
     if (!form.password) {
       newErrors.password = "Password is required";
-    } else if (form.password.length < 6) {
-      newErrors.password = "Min 6 characters";
+    } else if (form.password.length < 8) {
+      newErrors.password = "Password must be at least 8 characters";
+    } else if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(form.password)) {
+      newErrors.password = "Password must contain a special character";
     }
     if (!form.confirmpassword) {
       newErrors.confirmpassword = "Required";
@@ -154,7 +158,7 @@ export function SignupForm() {
 
       <form className="space-y-2.5" onSubmit={handleSubmit}>
         {errors.general && (
-          <div className="rounded-lg border border-destructive/20 bg-destructive/10 px-3 py-2 text-xs text-destructive">
+          <div className="rounded-lg border border-destructive/20 bg-destructive/10 px-3 py-2 text-xs text-chart-5">
             {errors.general}
           </div>
         )}
@@ -173,7 +177,7 @@ export function SignupForm() {
               className={inputCls}
             />
             {errors.firstname && (
-              <p className="mt-0.5 text-[10px] text-destructive">{errors.firstname}</p>
+              <p className="mt-0.5 text-[14px] text-chart-5">{errors.firstname}</p>
             )}
           </div>
           <div>
@@ -188,7 +192,7 @@ export function SignupForm() {
               className={inputCls}
             />
             {errors.lastname && (
-              <p className="mt-0.5 text-[10px] text-destructive">{errors.lastname}</p>
+              <p className="mt-0.5 text-[14px] text-chart-5">{errors.lastname}</p>
             )}
           </div>
         </div>
@@ -207,7 +211,7 @@ export function SignupForm() {
             className={inputCls}
           />
           {errors.email && (
-            <p className="mt-0.5 text-[10px] text-destructive">{errors.email}</p>
+            <p className="mt-0.5 text-[14px] text-chart-5">{errors.email}</p>
           )}
         </div>
 
@@ -217,32 +221,60 @@ export function SignupForm() {
             <label className="mb-1 block text-[10px] font-medium uppercase tracking-wider text-muted">
               Password
             </label>
-            <input
-              type="password"
-              value={form.password}
-              onChange={(e) => updateField("password", e.target.value)}
-              disabled={submitting}
-              placeholder="••••••••"
-              className={inputCls}
-            />
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                value={form.password}
+                onChange={(e) => updateField("password", e.target.value)}
+                disabled={submitting}
+                placeholder="••••••••"
+                className={inputCls}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                disabled={submitting}
+                className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition disabled:opacity-50"
+              >
+                {showPassword ? (
+                  <IconEyeOff size={14} />
+                ) : (
+                  <IconEye size={14} />
+                )}
+              </button>
+            </div>
             {errors.password && (
-              <p className="mt-0.5 text-[10px] text-destructive">{errors.password}</p>
+              <p className="mt-0.5 text-[14px] text-chart-5">{errors.password}</p>
             )}
           </div>
           <div>
             <label className="mb-1 block text-[10px] font-medium uppercase tracking-wider text-muted">
               Confirm
             </label>
-            <input
-              type="password"
-              value={form.confirmpassword}
-              onChange={(e) => updateField("confirmpassword", e.target.value)}
-              disabled={submitting}
-              placeholder="••••••••"
-              className={inputCls}
-            />
+            <div className="relative">
+              <input
+                type={showConfirmPassword ? "text" : "password"}
+                value={form.confirmpassword}
+                onChange={(e) => updateField("confirmpassword", e.target.value)}
+                disabled={submitting}
+                placeholder="••••••••"
+                className={inputCls}
+              />
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                disabled={submitting}
+                className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition disabled:opacity-50"
+              >
+                {showConfirmPassword ? (
+                  <IconEyeOff size={14} />
+                ) : (
+                  <IconEye size={14} />
+                )}
+              </button>
+            </div>
             {errors.confirmpassword && (
-              <p className="mt-0.5 text-[10px] text-destructive">{errors.confirmpassword}</p>
+              <p className="mt-0.5 text-[14px] text-chart-5">{errors.confirmpassword}</p>
             )}
           </div>
         </div>
