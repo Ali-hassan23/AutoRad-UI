@@ -9,7 +9,6 @@ export interface RegisterData {
   email: string;
   password: string;
   full_name: string;
-  role?: string;
 }
 
 export interface TokenResponse {
@@ -63,10 +62,7 @@ export async function register(data: RegisterData): Promise<UserProfile> {
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({
-      ...data,
-      role: data.role || "user",
-    }),
+    body: JSON.stringify(data),
     credentials: "include",
   });
 

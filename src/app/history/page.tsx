@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { getUser } from "@/lib/auth-server";
 import HistoryListClient from "@/components/History/HistoryListClient";
+import AdminNavLink from "@/components/Admin/AdminNavLink";
 
 export default async function HistoryPage() {
   const user = await getUser();
@@ -30,6 +31,10 @@ export default async function HistoryPage() {
             <Link href="/history" className="text-primary font-semibold">
               History
             </Link>
+            <AdminNavLink
+              role={user.role}
+              className="hover:text-foreground transition text-teal-700 font-semibold"
+            />
             <Link href="/settings" className="hover:text-foreground transition">
               Settings
             </Link>

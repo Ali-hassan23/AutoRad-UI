@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import SignOutButton from "@/components/auth/SignOutButton";
+import AdminNavLink from "@/components/Admin/AdminNavLink";
 
 type User = {
   id: number;
@@ -108,6 +109,12 @@ export default function SettingsPage() {
             <Link href="/preprocess" className="hover:text-white">
               Generate Reports
             </Link>
+            {user && (
+              <AdminNavLink
+                role={user.role}
+                className="hover:text-white text-teal-300 font-semibold"
+              />
+            )}
             <Link href="/settings" className="text-white">
               Settings
             </Link>

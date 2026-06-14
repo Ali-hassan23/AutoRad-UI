@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { getUser } from "@/lib/auth-server";
 import { getStudiesSummary } from "@/lib/studies-server";
 import SignOutButton from "@/components/auth/SignOutButton";
+import AdminNavLink from "@/components/Admin/AdminNavLink";
 
 export default async function DashboardPage() {
   const user = await getUser();
@@ -35,6 +36,10 @@ export default async function DashboardPage() {
             <Link href="/history" className="hover:text-foreground transition">
               History
             </Link>
+            <AdminNavLink
+              role={user.role}
+              className="hover:text-foreground transition text-teal-700 font-semibold"
+            />
             <a href="/settings" className="hover:text-foreground transition">
               Settings
             </a>

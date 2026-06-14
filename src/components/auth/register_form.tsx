@@ -85,7 +85,6 @@ export function SignupForm() {
           email: form.email,
           password: form.password,
           full_name: `${form.firstname} ${form.lastname}`.trim(),
-          role: "user",
         }),
         credentials: "include",
       });
