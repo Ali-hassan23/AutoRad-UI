@@ -34,6 +34,9 @@ export default async function HistoryPage() {
             <Link href="/history" className="text-primary font-semibold">
               History
             </Link>
+            <Link href="/terms" className="hover:text-foreground transition">
+              Terms
+            </Link>
             <AdminNavLink
               role={user.role}
               className="hover:text-foreground transition text-teal-700 font-semibold"

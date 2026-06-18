@@ -1,41 +1,42 @@
+"use client"
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 
 const highlights = [
-  { label: "HIPAA-ready", detail: "Data stays encrypted in transit & at rest." },
-  { label: "2.3x faster", detail: "Turnaround time versus manual dictation." },
-  { label: "Structured", detail: "Consistent sections for Findings & Impression." },
+  { label: "HIPAA-ready", detail: "Data encrypted in transit & at rest." },
+  { label: "Doctor-led", detail: "Every report reviewed and signed by a clinician." },
+  { label: "Structured output", detail: "Consistent Findings & Impression sections, every time." },
 ];
 
 const features = [
   {
-    title: "Diagnostic-grade pipelines",
-    copy: "State-of-the-art models tuned for thoracic findings with guardrails for uncertainty.",
+    title: "Chest X-ray verification",
+    copy: "Before anything runs, AutoRad confirms the upload is a chest X-ray. Non-chest or unrecognised scans are flagged immediately — keeping the pipeline clean.",
   },
   {
-    title: "Clinician-first review",
-    copy: "Editable drafts, smart highlights, and citation notes for rapid sign-off.",
+    title: "AI report generation",
+    copy: "Once verified, the model analyses the scan and produces a structured draft covering Findings, Impression, and Recommendations — ready for clinician review in seconds.",
   },
   {
-    title: "Enterprise controls",
-    copy: "SSO, audit trails, and environment isolation to meet security reviews.",
+    title: "Chatbot-assisted editing",
+    copy: "Not happy with a section? Ask the built-in assistant to rephrase, expand, or correct specific parts of the report in plain language. Changes are previewed before applying.",
   },
   {
-    title: "Seamless integrations",
-    copy: "HL7/FHIR-ready endpoints plus email notifications when reports are ready.",
+    title: "Export & save",
+    copy: "Finalised reports export to PDF with one click. Studies and edited reports are saved to history so you can revisit, compare with prior scans, or share with colleagues.",
   },
 ];
 
 const steps = [
-  "Upload a DICOM or PNG chest X‑ray securely.",
-  "AutoRad detects key patterns and drafts a structured report.",
-  "You review, edit, and export to your RIS/PACS instantly.",
+  "Upload a chest X-ray. AutoRad verifies it is a valid chest scan before proceeding.",
+  "The AI model analyses the image and drafts a structured radiology report.",
+  "Review, edit with the assistant, then save or export as PDF — ready for sign-off.",
 ];
 
 const metrics = [
-  { value: "98%", label: "Clinical acceptance after first draft" },
-  { value: "11 min", label: "Avg. time saved per report" },
+  { value: "< 10 sec", label: "From upload to draft report" },
+  { value: "100%", label: "Reports reviewed by a licensed clinician before use" },
   { value: "24/7", label: "Inference availability with autoscaling" },
 ];
 
@@ -110,6 +111,7 @@ export default function GetStartedPage() {
       <div className="relative isolate overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(15,118,110,0.12),transparent_35%)]" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_10%,rgba(20,184,166,0.10),transparent_40%)]" />
+
         <header className="sticky top-0 z-10 border-b border-border bg-white/90 backdrop-blur">
           <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
             <div className="flex items-center gap-3">
@@ -120,10 +122,22 @@ export default function GetStartedPage() {
               </div>
             </div>
             <nav className="hidden items-center gap-8 text-sm font-medium text-muted-foreground md:flex">
-              <Link href="#product" className="hover:text-foreground transition">Product</Link>
-              <Link href="#workflow" className="hover:text-foreground transition">Workflow</Link>
-              <Link href="#metrics" className="hover:text-foreground transition">Outcomes</Link>
-              <Link href="#cta" className="hover:text-foreground transition">Pricing</Link>
+              <a href="#product" className="hover:text-foreground transition" style={{ scrollBehavior: "smooth" }}
+                onClick={(e) => { e.preventDefault(); document.getElementById("product")?.scrollIntoView({ behavior: "smooth" }); }}>
+                Product
+              </a>
+              <a href="#workflow" className="hover:text-foreground transition"
+                onClick={(e) => { e.preventDefault(); document.getElementById("workflow")?.scrollIntoView({ behavior: "smooth" }); }}>
+                Workflow
+              </a>
+              <a href="#metrics" className="hover:text-foreground transition"
+                onClick={(e) => { e.preventDefault(); document.getElementById("metrics")?.scrollIntoView({ behavior: "smooth" }); }}>
+                Outcomes
+              </a>
+              <a href="#cta" className="hover:text-foreground transition"
+                onClick={(e) => { e.preventDefault(); document.getElementById("cta")?.scrollIntoView({ behavior: "smooth" }); }}>
+                Get started
+              </a>
             </nav>
             <div className="flex items-center gap-3">
               <Link
@@ -134,7 +148,7 @@ export default function GetStartedPage() {
               </Link>
               <Link href="/auth">
                 <Button className="rounded-full bg-primary text-primary-foreground hover:bg-primary/90">
-                  Start trial
+                  Get started
                 </Button>
               </Link>
             </div>
@@ -145,13 +159,13 @@ export default function GetStartedPage() {
           <div className="space-y-6">
             <div className="inline-flex items-center gap-2 rounded-full bg-secondary/10 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-secondary ring-1 ring-secondary/20">
               <span className="h-2 w-2 rounded-full bg-accent" />
-              Clinician-ready drafts in seconds
+              AI-drafted reports, refined by you
             </div>
             <h1 className="text-4xl font-semibold leading-tight sm:text-5xl text-foreground">
-              AI-generated chest X-ray reports with human-grade clarity.
+              Your expertise. AI-assisted efficiency.
             </h1>
             <p className="max-w-xl text-base text-muted-foreground sm:text-lg">
-              AutoRad accelerates radiology throughput with auditable, structured reports. Keep clinicians in control while the AI handles the heavy lifting.
+              AutoRad drafts structured chest X-ray reports for clinician review. From scan to structured draft — reviewed and signed by you.
             </p>
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
               <Link href="/auth">
@@ -159,12 +173,13 @@ export default function GetStartedPage() {
                   Generate my first report
                 </Button>
               </Link>
-              <Link
-                href="/generate"
-                className="inline-flex items-center justify-center rounded-full px-4 py-3 text-sm font-semibold text-primary ring-1 ring-primary/20 hover:bg-primary/5 transition"
+              <a
+                href="#workflow"
+                onClick={(e) => { e.preventDefault(); document.getElementById("workflow")?.scrollIntoView({ behavior: "smooth" }); }}
+                className="inline-flex items-center justify-center rounded-full px-4 py-3 text-sm font-semibold text-primary ring-1 ring-primary/20 hover:bg-primary/5 transition cursor-pointer"
               >
-                View sample workflow
-              </Link>
+                See how it works
+              </a>
             </div>
 
             <div className="grid gap-4 rounded-2xl bg-gradient-to-br from-secondary/5 to-accent/5 p-4 ring-1 ring-border sm:grid-cols-3">
@@ -189,14 +204,14 @@ export default function GetStartedPage() {
         <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
           <div>
             <p className="text-xs uppercase tracking-[0.14em] text-primary font-semibold">Built for radiology teams</p>
-            <h2 className="text-3xl font-semibold text-foreground sm:text-4xl">Precision where it matters</h2>
+            <h2 className="text-3xl font-semibold text-foreground sm:text-4xl">Everything in one workflow</h2>
             <p className="mt-3 max-w-2xl text-muted-foreground">
-              We combine computer vision with a clinician-first experience so teams can trust every impression that leaves the workstation.
+              From scan validation to signed PDF — AutoRad handles each step while keeping the clinician in full control.
             </p>
           </div>
           <div className="flex items-center gap-3">
             <div className="h-2 w-2 rounded-full bg-accent" />
-            <p className="text-sm font-medium text-muted-foreground">SOC2 in progress • On-prem ready</p>
+            <p className="text-sm font-medium text-muted-foreground">HIPAA-ready • Clinician sign-off required</p>
           </div>
         </div>
 
@@ -247,10 +262,10 @@ export default function GetStartedPage() {
 
       <section id="metrics" className="mx-auto max-w-6xl space-y-10 px-6 py-16">
         <div className="flex flex-col gap-2">
-          <p className="text-xs uppercase tracking-[0.14em] text-primary font-semibold">Measured impact</p>
-          <h2 className="text-3xl font-semibold text-foreground sm:text-4xl">Outcomes you can report on</h2>
+          <p className="text-xs uppercase tracking-[0.14em] text-primary font-semibold">By the numbers</p>
+          <h2 className="text-3xl font-semibold text-foreground sm:text-4xl">Built for clinical reality</h2>
           <p className="max-w-2xl text-muted-foreground">
-            Purpose-built dashboards keep leadership in the loop with adoption and quality metrics.
+            Designed around the actual constraints of a radiology department — speed, reliability, and clinician oversight.
           </p>
         </div>
         <div className="grid gap-6 md:grid-cols-3">
@@ -272,7 +287,7 @@ export default function GetStartedPage() {
             <p className="text-xs uppercase tracking-[0.18em] text-primary-foreground/70">Start now</p>
             <h3 className="text-2xl font-semibold">Ready to see AutoRad in action?</h3>
             <p className="max-w-2xl text-primary-foreground/90">
-              Spin up a secure sandbox, generate your first report, and invite colleagues to review.
+              Create an account, upload your first scan, and have a structured draft ready for review in seconds.
             </p>
           </div>
           <div className="flex items-center gap-3">
@@ -280,12 +295,6 @@ export default function GetStartedPage() {
               <Button className="rounded-full bg-primary-foreground px-5 py-3 text-primary hover:bg-primary-foreground/90 font-semibold">
                 Create account
               </Button>
-            </Link>
-            <Link
-              href="/auth"
-              className="rounded-full px-4 py-3 text-sm font-semibold text-primary-foreground ring-1 ring-primary-foreground/40 hover:bg-primary-foreground/10 transition"
-            >
-              Talk to us
             </Link>
           </div>
         </div>
@@ -301,10 +310,9 @@ export default function GetStartedPage() {
             </div>
           </div>
           <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
-            <Link href="/generate" className="hover:text-foreground transition">Product</Link>
+            <Link href="/terms" className="hover:text-foreground transition">Terms</Link>
             <Link href="/dashboard" className="hover:text-foreground transition">Dashboard</Link>
             <Link href="/settings" className="hover:text-foreground transition">Settings</Link>
-            <Link href="/auth" className="hover:text-foreground transition">Support</Link>
           </div>
         </div>
       </footer>

@@ -89,9 +89,9 @@ export default function AuthSwitcher() {
             </p>
             <div className="space-y-2.5">
               {[
-                "PHI masking enabled by default",
-                "Low-confidence deferral guardrails",
-                "SLA queue under 20s for 95% of jobs",
+                "Reporting time reduction",
+                "AI-drafted reports",
+                "From scan to structured draft",
               ].map((feat) => (
                 <div key={feat} className="flex items-center gap-2.5">
                   <div className="h-1.5 w-1.5 rounded-full bg-accent flex-shrink-0" />

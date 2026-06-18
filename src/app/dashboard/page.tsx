@@ -45,6 +45,9 @@ export default async function DashboardPage() {
             <Link href="/history" className="hover:text-foreground transition">
               History
             </Link>
+            <Link href="/terms" className="hover:text-foreground transition">
+              Terms
+            </Link>
             <AdminNavLink
               role={user.role}
               className="hover:text-foreground transition text-teal-700 font-semibold"

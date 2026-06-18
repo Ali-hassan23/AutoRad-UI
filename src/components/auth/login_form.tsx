@@ -8,6 +8,7 @@ type Errors = {
   email?: string;
   password?: string;
   general?: string;
+  terms?: string;
 };
 
 export function LoginForm() {
@@ -17,6 +18,7 @@ export function LoginForm() {
   const [errors, setErrors] = useState<Errors>({});
   const [submitting, setSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
 
   const validate = () => {
     const newErrors: Errors = {};
@@ -24,6 +26,9 @@ export function LoginForm() {
       newErrors.email = "Email is required";
     } else if (!/^\S+@\S+\.\S+$/.test(form.email)) {
       newErrors.email = "Invalid email format";
+    }
+    if (!acceptedTerms) {
+      newErrors.terms = "You must accept the Terms and Conditions to continue";
     }
     if (!form.password) {
       newErrors.password = "Password is required";
@@ -59,7 +64,6 @@ export function LoginForm() {
         throw new Error(errorData.detail || "Login failed");
       }
 
-      // Fetch user data to check role
       const userRes = await fetch("/api/users/me", {
         credentials: "include",
       });
@@ -70,7 +74,6 @@ export function LoginForm() {
 
       const userData = await userRes.json();
 
-      // Determine redirect destination based on user role
       let redirectTo = searchParams.get("redirect");
       if (!redirectTo) {
         redirectTo = userData.role === "admin" ? "/admin" : "/dashboard";
@@ -79,7 +82,8 @@ export function LoginForm() {
       router.push(redirectTo);
       router.refresh();
     } catch (err) {
-      const message = err instanceof Error ? err.message : "Invalid credentials";
+      const message =
+        err instanceof Error ? err.message : "Invalid credentials";
       setErrors({ general: message });
     } finally {
       setSubmitting(false);
@@ -87,7 +91,8 @@ export function LoginForm() {
   };
 
   const handleGoogleLogin = () => {
-    const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000";
+    const backendUrl =
+      process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000";
     window.location.href = `${backendUrl}/auth/login/google`;
   };
 
@@ -100,7 +105,9 @@ export function LoginForm() {
     <div>
       <div className="mb-8 space-y-1">
         <h2 className="text-2xl font-semibold text-foreground">Log in</h2>
-        <p className="text-sm text-muted-foreground">Enter your credentials to continue</p>
+        <p className="text-sm text-muted-foreground">
+          Enter your credentials to continue
+        </p>
       </div>
 
       <form onSubmit={handleLogin} className="space-y-4">
@@ -146,15 +153,57 @@ export function LoginForm() {
               disabled={submitting}
               className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition disabled:opacity-50"
             >
-              {showPassword ? (
-                <IconEyeOff size={18} />
-              ) : (
-                <IconEye size={18} />
-              )}
+              {showPassword ? <IconEyeOff size={18} /> : <IconEye size={18} />}
             </button>
           </div>
           {errors.password && (
             <p className="text-xs text-destructive">{errors.password}</p>
+          )}
+        </div>
+
+        {/* Terms and Conditions checkbox */}
+        <div className="space-y-1.5">
+          <label className="flex items-start gap-3 cursor-pointer group">
+            <div className="relative mt-0.5 shrink-0">
+              <input
+                type="checkbox"
+                checked={acceptedTerms}
+                onChange={(e) => {
+                  setAcceptedTerms(e.target.checked);
+                  setErrors((prev) => ({ ...prev, terms: undefined }));
+                }}
+                disabled={submitting}
+                className="peer h-4 w-4 cursor-pointer appearance-none rounded border border-border bg-card transition checked:bg-primary checked:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:opacity-50"
+              />
+              <svg
+                className="pointer-events-none absolute inset-0 m-auto h-2.5 w-2.5 text-primary-foreground opacity-0 peer-checked:opacity-100 transition"
+                viewBox="0 0 10 10"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  d="M1.5 5l2.5 2.5 4.5-4.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </div>
+            <span className="text-sm text-muted-foreground leading-snug group-hover:text-foreground transition select-none">
+              I have read and agree to the{" "}
+              <a
+                href="/terms"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => e.stopPropagation()}
+                className="font-medium text-primary underline underline-offset-2 hover:text-primary/80 transition"
+              >
+                Terms and Conditions
+              </a>
+            </span>
+          </label>
+          {errors.terms && (
+            <p className="text-xs text-destructive">{errors.terms}</p>
           )}
         </div>
 
@@ -168,8 +217,6 @@ export function LoginForm() {
       </form>
 
       <div className="my-5 flex items-center gap-3">
-        <div className="h-px flex-1 bg-border" />
-        <span className="text-xs text-muted-foreground">or</span>
         <div className="h-px flex-1 bg-border" />
       </div>
 

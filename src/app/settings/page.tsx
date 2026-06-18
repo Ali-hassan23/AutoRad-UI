@@ -145,6 +145,9 @@ export default function SettingsPage() {
             <Link href="/history" className="hover:text-foreground transition">
               History
             </Link>
+            <Link href="/terms" className="hover:text-foreground transition">
+              Terms
+            </Link>
             {user && (
               <AdminNavLink
                 role={user.role}

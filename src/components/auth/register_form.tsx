@@ -10,6 +10,7 @@ type Errors = {
   email?: string;
   password?: string;
   confirmpassword?: string;
+  terms?: string;
   general?: string;
 };
 
@@ -33,6 +34,7 @@ export function SignupForm() {
   const [submitting, setSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
 
   const validate = () => {
     const newErrors: Errors = {};
@@ -54,6 +56,9 @@ export function SignupForm() {
       newErrors.confirmpassword = "Required";
     } else if (form.password !== form.confirmpassword) {
       newErrors.confirmpassword = "Passwords do not match";
+    }
+    if (!acceptedTerms) {
+      newErrors.terms = "You must accept the Terms and Conditions to continue";
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -120,7 +125,6 @@ export function SignupForm() {
         return;
       }
 
-      // Fetch user data to check role
       const userRes = await fetch("/api/users/me", {
         credentials: "include",
       });
@@ -131,7 +135,6 @@ export function SignupForm() {
 
       const userData = await userRes.json();
 
-      // Determine redirect destination based on user role
       let redirectTo = searchParams.get("redirect");
       if (!redirectTo) {
         redirectTo = userData.role === "admin" ? "/admin" : "/dashboard";
@@ -251,11 +254,7 @@ export function SignupForm() {
                 disabled={submitting}
                 className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition disabled:opacity-50"
               >
-                {showPassword ? (
-                  <IconEyeOff size={14} />
-                ) : (
-                  <IconEye size={14} />
-                )}
+                {showPassword ? <IconEyeOff size={14} /> : <IconEye size={14} />}
               </button>
             </div>
             {errors.password && (
@@ -281,17 +280,59 @@ export function SignupForm() {
                 disabled={submitting}
                 className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition disabled:opacity-50"
               >
-                {showConfirmPassword ? (
-                  <IconEyeOff size={14} />
-                ) : (
-                  <IconEye size={14} />
-                )}
+                {showConfirmPassword ? <IconEyeOff size={14} /> : <IconEye size={14} />}
               </button>
             </div>
             {errors.confirmpassword && (
               <p className="mt-0.5 text-[14px] text-chart-5">{errors.confirmpassword}</p>
             )}
           </div>
+        </div>
+
+        {/* Terms and Conditions checkbox */}
+        <div className="space-y-1">
+          <label className="flex items-start gap-3 cursor-pointer group">
+            <div className="relative mt-0.5 shrink-0">
+              <input
+                type="checkbox"
+                checked={acceptedTerms}
+                onChange={(e) => {
+                  setAcceptedTerms(e.target.checked);
+                  setErrors((prev) => ({ ...prev, terms: undefined }));
+                }}
+                disabled={submitting}
+                className="peer h-4 w-4 cursor-pointer appearance-none rounded border border-border bg-card transition checked:bg-primary checked:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 disabled:opacity-50"
+              />
+              <svg
+                className="pointer-events-none absolute inset-0 m-auto h-2.5 w-2.5 text-primary-foreground opacity-0 peer-checked:opacity-100 transition"
+                viewBox="0 0 10 10"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  d="M1.5 5l2.5 2.5 4.5-4.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </div>
+            <span className="text-sm text-muted leading-snug group-hover:text-foreground transition select-none">
+              I have read and agree to the{" "}
+              <a
+                href="/terms"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => e.stopPropagation()}
+                className="font-medium text-white underline underline-offset-2 hover:text-primary/80 transition"
+              >
+                Terms and Conditions
+              </a>
+            </span>
+          </label>
+          {errors.terms && (
+            <p className="text-[14px] text-chart-5">{errors.terms}</p>
+          )}
         </div>
 
         <button
@@ -304,8 +345,6 @@ export function SignupForm() {
       </form>
 
       <div className="my-3 flex items-center gap-3">
-        <div className="h-px flex-1 bg-border" />
-        <span className="text-[10px] text-muted-foreground">or</span>
         <div className="h-px flex-1 bg-border" />
       </div>
 

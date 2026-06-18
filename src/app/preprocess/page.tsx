@@ -33,6 +33,9 @@ export default async function GeneratePage() {
             <Link href="/history" className="hover:text-foreground transition">
               History
             </Link>
+            <Link href="/terms" className="hover:text-foreground transition">
+              Terms
+            </Link>
             <a href="/settings" className="hover:text-foreground transition">Settings</a>
           </nav>
           <a
