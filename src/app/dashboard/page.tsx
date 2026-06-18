@@ -5,17 +5,22 @@ import { getUser } from "@/lib/auth-server";
 import { getStudiesSummary } from "@/lib/studies-server";
 import SignOutButton from "@/components/auth/SignOutButton";
 import AdminNavLink from "@/components/Admin/AdminNavLink";
+import MobileNav from "@/components/ui/Mobilenav";
+
 
 export default async function DashboardPage() {
   const user = await getUser();
   if (!user) redirect("/auth");
+  
+  // Redirect admins to /admin
+  if (user.role === "admin") redirect("/admin");
 
   const { total: reportsCount, lastActivity } = await getStudiesSummary();
 
   return (
     <div className="min-h-screen text-foreground">
       {/* Header */}
-      <header className="sticky top-0 z-10 border-b border-border bg-white/90 backdrop-blur">
+      <header className="sticky top-0 z-10 border-b border-border bg-white/90 backdrop-blur relative">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
           <div className="flex items-center gap-3">
             <div className="inline-flex h-12 w-12 items-center justify-center rounded-xl bg-primary text-base font-semibold text-primary-foreground">
@@ -48,9 +53,12 @@ export default async function DashboardPage() {
               Settings
             </a>
           </nav>
-          <SignOutButton className="cursor-pointer rounded-full bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground shadow-sm hover:bg-primary/90 transition">
-            Sign out
-          </SignOutButton>
+          <div className="flex items-center gap-2">
+            <SignOutButton className="hidden md:inline-flex cursor-pointer rounded-full bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground shadow-sm hover:bg-primary/90 transition">
+              Sign out
+            </SignOutButton>
+            <MobileNav role={user.role} />
+          </div>
         </div>
       </header>
 

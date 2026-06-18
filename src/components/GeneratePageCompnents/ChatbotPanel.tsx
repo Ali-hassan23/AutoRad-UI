@@ -18,11 +18,12 @@ export default function ChatbotPanel({ report, onUpdate }: Props) {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [pendingReport, setPendingReport] = useState<string | null>(null);
-  const bottomRef = useRef<HTMLDivElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
-  // Auto-scroll to latest message
+  // Auto-scroll within the chat container only — never scrolls the page
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    const el = scrollContainerRef.current;
+    if (el) el.scrollTop = el.scrollHeight;
   }, [messages, loading]);
 
   async function sendMessage() {
@@ -79,7 +80,7 @@ export default function ChatbotPanel({ report, onUpdate }: Props) {
       </div>
 
       {/* Chat history — scrollable, fills all available space */}
-      <div className="flex-1 overflow-y-auto space-y-4 pr-1 min-h-0">
+      <div ref={scrollContainerRef} className="flex-1 overflow-y-auto space-y-4 pr-1 min-h-0">
 
         {messages.length === 0 && (
           <div className="flex flex-col items-center justify-center h-full text-center gap-3 text-slate-400 py-10">
@@ -129,7 +130,6 @@ export default function ChatbotPanel({ report, onUpdate }: Props) {
           </div>
         )}
 
-        <div ref={bottomRef} />
       </div>
 
       {/* Pending update banner */}

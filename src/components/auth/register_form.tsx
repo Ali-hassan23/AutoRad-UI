@@ -120,8 +120,23 @@ export function SignupForm() {
         return;
       }
 
-      // Redirect to the originally requested page or dashboard
-      const redirectTo = searchParams.get("redirect") || "/dashboard";
+      // Fetch user data to check role
+      const userRes = await fetch("/api/users/me", {
+        credentials: "include",
+      });
+
+      if (!userRes.ok) {
+        throw new Error("Failed to fetch user data");
+      }
+
+      const userData = await userRes.json();
+
+      // Determine redirect destination based on user role
+      let redirectTo = searchParams.get("redirect");
+      if (!redirectTo) {
+        redirectTo = userData.role === "admin" ? "/admin" : "/dashboard";
+      }
+
       router.push(redirectTo);
       router.refresh();
     } catch (err) {
@@ -294,7 +309,7 @@ export function SignupForm() {
         <div className="h-px flex-1 bg-border" />
       </div>
 
-      <button
+      {/* <button
         type="button"
         onClick={handleGoogleSignup}
         disabled={submitting}
@@ -302,7 +317,7 @@ export function SignupForm() {
       >
         <IconBrandGoogle className="h-4 w-4" />
         Continue with Google
-      </button>
+      </button> */}
     </div>
   );
 }

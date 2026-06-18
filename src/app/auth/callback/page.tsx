@@ -23,11 +23,16 @@ export default function OAuthCallback() {
           throw new Error("Invalid response from server");
         }
 
+        const userData = await response.json();
+        
         setStatus("success");
         setMessage("Login successful! Redirecting...");
 
+        // Determine redirect destination based on user role
+        const redirectUrl = userData.role === "admin" ? "/admin" : "/dashboard";
+
         setTimeout(() => {
-          window.location.href = "/dashboard";
+          window.location.href = redirectUrl;
         }, 1500);
       } catch (error) {
         console.error("OAuth callback error:", error);

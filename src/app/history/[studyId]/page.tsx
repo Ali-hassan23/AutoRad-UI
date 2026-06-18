@@ -9,6 +9,9 @@ type Props = {
 export default async function HistoryStudyPage({ params }: Props) {
   const user = await getUser();
   if (!user) redirect("/auth");
+  
+  // Redirect admins to /admin
+  if (user.role === "admin") redirect("/admin");
 
   const { studyId } = await params;
 

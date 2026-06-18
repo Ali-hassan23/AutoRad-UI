@@ -23,6 +23,12 @@ export default function StudyWorkspace({ studyId, mode }: Props) {
   >([]);
   const [error, setError] = useState<string | null>(null);
 
+  // Ensure page always starts at top — prevents layout-shift scroll caused
+  // by async data loads (heatmap fetch, report fetch) triggering a jump.
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "instant" });
+  }, [studyId]);
+
   useEffect(() => {
     let cancelled = false;
 

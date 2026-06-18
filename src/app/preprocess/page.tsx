@@ -9,6 +9,9 @@ export default async function GeneratePage() {
   const user = await getUser();
 
   if (!user) redirect("/auth");
+  
+  // Redirect admins to /admin
+  if (user.role === "admin") redirect("/admin");
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background via-sky-50 to-white text-foreground">
